@@ -65,6 +65,10 @@
             font-size: 0.9em;
         }
 
+        .nav-tab:hover {
+            background: #dee2e6;
+        }
+
         .nav-tab.active {
             background: white;
             border-bottom-color: #4CAF50;
@@ -142,7 +146,6 @@
             height: 150px;
             border-radius: 50%;
             background: linear-gradient(135deg, #4CAF50, #81C784);
-            transition: transform 4s ease-in-out;
             margin: 20px;
             display: flex;
             align-items: center;
@@ -151,10 +154,12 @@
             font-weight: bold;
             font-size: 1.2em;
             box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+            transition: transform 1s ease-in-out;
         }
 
         .breathing-circle.expand {
             transform: scale(1.5);
+            transition: transform 4s ease-in-out;
         }
 
         .breathing-circle.contract {
@@ -216,14 +221,6 @@
             border-color: #FF9800;
             background: #fff3e0;
             font-weight: bold;
-        }
-
-        .salvation-status {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #2196F3;
         }
 
         .scale-container {
@@ -366,6 +363,47 @@
             margin: 10px 0;
         }
 
+        .salvation-status {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #2196F3;
+            display: none;
+        }
+
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .emotion-btn {
+            width: auto;
+            height: 60px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .emotion-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .emotion-btn.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -417,961 +455,7 @@
             <div id="dashboard" class="section active">
                 <h2>📊 Today's Wellness Dashboard</h2>
                 
-                <div class="bible-verse">
-                    <strong>"Not forsaking the assembling of ourselves together, as is the manner of some, but exhorting one another, and so much the more as you see the Day approaching."</strong> - Hebrews 10:25
-                </div>
-            </div>
-
-            <!-- Social Wellness Section -->
-            <div id="social" class="section">
-                <h2>👥 Social Wellness Activities</h2>
-                
-                <div class="pillar-card social-card">
-                    <h3>🤝 Daily Social Connections</h3>
-                    <div class="goals-checklist">
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Call or text a family member</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Reach out to encourage a church friend</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Practice active listening with someone</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Show Christ's love through service</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Participate in church fellowship</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pillar-card social-card">
-                    <h3>❤️ Relationship Quality Assessment</h3>
-                    <div style="margin: 15px 0;">
-                        <label><strong>How satisfied are you with your relationships today? (1-10):</strong></label>
-                        <div class="scale-container" id="relationship-quality">
-                            <div class="scale-btn" onclick="selectRelationship(this, 1)">1</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 2)">2</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 3)">3</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 4)">4</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 5)">5</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 6)">6</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 7)">7</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 8)">8</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 9)">9</div>
-                            <div class="scale-btn" onclick="selectRelationship(this, 10)">10</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" onclick="saveRelationshipQuality()">Save Rating</button>
-                </div>
-
-                <div class="pillar-card social-card">
-                    <h3>🎯 Social Connection Goal</h3>
-                    <label><strong>Today's social goal:</strong></label>
-                    <textarea class="journal-area" id="social-goal" placeholder="What relationship will you focus on strengthening today? (e.g., 'I will actively listen to my spouse without interrupting during our evening conversation')"></textarea>
-                    <button class="btn btn-primary" onclick="saveSocialGoal()">Save Goal</button>
-                </div>
-
-                <div class="bible-verse">
-                    <strong>"As iron sharpens iron, so a man sharpens the countenance of his friend."</strong> - Proverbs 27:17
-                </div>
-            </div>
-
-            <!-- Emotional Wellness Section -->
-            <div id="emotional" class="section">
-                <h2>❤️ Emotional Wellness Activities</h2>
-                
-                <div class="pillar-card emotional-card">
-                    <h3>😊 Daily Mood & Emotion Tracker</h3>
-                    <div style="margin: 15px 0;">
-                        <label><strong>Primary emotion right now:</strong></label>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 15px; margin: 15px 0;">
-                            <div class="scale-btn" onclick="selectEmotion(this, 'joyful')" style="width: auto; height: 60px; border-radius: 10px;">
-                                😊<br>Joyful
-                            </div>
-                            <div class="scale-btn" onclick="selectEmotion(this, 'peaceful')" style="width: auto; height: 60px; border-radius: 10px;">
-                                😌<br>Peaceful
-                            </div>
-                            <div class="scale-btn" onclick="selectEmotion(this, 'anxious')" style="width: auto; height: 60px; border-radius: 10px;">
-                                😰<br>Anxious
-                            </div>
-                            <div class="scale-btn" onclick="selectEmotion(this, 'sad')" style="width: auto; height: 60px; border-radius: 10px;">
-                                😢<br>Sad
-                            </div>
-                            <div class="scale-btn" onclick="selectEmotion(this, 'angry')" style="width: auto; height: 60px; border-radius: 10px;">
-                                😠<br>Angry
-                            </div>
-                            <div class="scale-btn" onclick="selectEmotion(this, 'grateful')" style="width: auto; height: 60px; border-radius: 10px;">
-                                🙏<br>Grateful
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger" onclick="saveEmotionalState()">Save Emotion</button>
-                </div>
-
-                <div class="pillar-card emotional-card">
-                    <h3>📝 Biblical Emotional Reflection</h3>
-                    <label><strong>Reflect on your emotions through a biblical lens:</strong></label>
-                    <textarea class="journal-area" id="emotional-journal" placeholder="Today I felt... because... Based on God's word, I can respond by... Scripture that helps me: ..."></textarea>
-                    <button class="btn btn-danger" onclick="saveEmotionalJournal()">Save Reflection</button>
-                </div>
-
-                <div class="pillar-card emotional-card">
-                    <h3>🧘 Emotional Regulation Goals</h3>
-                    <div class="goals-checklist">
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Pause and pray before reacting emotionally</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Counter negative thoughts with Scripture</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Practice forgiveness (self or others)</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Express gratitude for 5 specific things</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Use biblical anger management (Eph 4:26)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bible-verse">
-                    <strong>"Be angry, and do not sin: do not let the sun go down on your wrath, nor give place to the devil."</strong> - Ephesians 4:26-27
-                </div>
-            </div>
-
-            <!-- Physical Wellness Section -->
-            <div id="physical" class="section">
-                <h2>💪 Physical Wellness Activities</h2>
-                
-                <div class="pillar-card physical-card">
-                    <h3>🏃 Body Stewardship Tracker</h3>
-                    <div class="goals-checklist">
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>20+ minutes of physical activity</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Drink 8+ glasses of water</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Eat nutritious, balanced meals</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Get 7+ hours of quality sleep</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Honor God with my body choices</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Avoid harmful substances</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pillar-card physical-card">
-                    <h3>⚖️ Biblical Body Stewardship Assessment</h3>
-                    <div style="margin: 15px 0;">
-                        <label><strong>How well are you honoring God with your body today? (1-10):</strong></label>
-                        <div class="scale-container" id="body-stewardship">
-                            <div class="scale-btn" onclick="selectStewardship(this, 1)">1</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 2)">2</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 3)">3</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 4)">4</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 5)">5</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 6)">6</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 7)">7</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 8)">8</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 9)">9</div>
-                            <div class="scale-btn" onclick="selectStewardship(this, 10)">10</div>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="saveStewardshipRating()">Save Rating</button>
-                </div>
-
-                <div class="pillar-card physical-card">
-                    <h3>📊 Daily Health Metrics</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
-                        <div>
-                            <label><strong>Steps Today:</strong></label>
-                            <input type="number" id="steps-input" placeholder="0" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin-top: 5px;">
-                        </div>
-                        <div>
-                            <label><strong>Sleep Hours Last Night:</strong></label>
-                            <input type="number" id="sleep-input" placeholder="0" step="0.5" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin-top: 5px;">
-                        </div>
-                        <div>
-                            <label><strong>Water Glasses:</strong></label>
-                            <input type="number" id="water-input" placeholder="0" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin-top: 5px;">
-                        </div>
-                    </div>
-                    <button class="btn" onclick="saveHealthMetrics()">Save Health Data</button>
-                </div>
-
-                <div class="bible-verse">
-                    <strong>"Or do you not know that your body is the temple of the Holy Spirit who is in you, whom you have from God, and you are not your own? For you were bought at a price; therefore glorify God in your body and in your spirit, which are God's."</strong> - 1 Corinthians 6:19-20
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Global variables
-        let breathingActive = false;
-        let currentEmotion = null;
-        let salvationData = {
-            gospel: null,
-            believe: null,
-            confess: null,
-            repent: null,
-            baptism: null,
-            worship: null
-        };
-        
-        // Daily tracking data
-        let dailyData = {
-            anxiety: null,
-            connection: null,
-            relationship: null,
-            stewardship: null,
-            emotion: null,
-            goals: [],
-            emotionalJournal: '',
-            socialGoal: '',
-            scriptureRead: false,
-            healthMetrics: {
-                steps: 0,
-                sleep: 0,
-                water: 0
-            }
-        };
-
-        // Biblical affirmations array
-        const biblicalAffirmations = [
-            "I am fearfully and wonderfully made by God (Psalm 139:14)",
-            "I can do all things through Christ who strengthens me (Philippians 4:13)",
-            "God has a plan and purpose for my life (Jeremiah 29:11)",
-            "I am more than a conqueror through Christ (Romans 8:37)",
-            "God will never leave me nor forsake me (Hebrews 13:5)",
-            "I am a new creation in Christ (2 Corinthians 5:17)",
-            "God's grace is sufficient for me (2 Corinthians 12:9)",
-            "I am chosen and beloved by God (1 Peter 2:9)",
-            "God works all things for my good (Romans 8:28)",
-            "I have the mind of Christ (1 Corinthians 2:16)"
-        ];
-
-        // Scripture verses for mental health
-        const strengtheningScriptures = [
-            '"Trust in the Lord with all your heart, and lean not on your own understanding." - Proverbs 3:5',
-            '"I can do all things through Christ who strengthens me." - Philippians 4:13',
-            '"Be strong and of good courage; do not be afraid, for the Lord your God is with you." - Joshua 1:9',
-            '"The Lord is my shepherd; I shall not want." - Psalm 23:1',
-            '"Come to Me, all you who are weary and heavy laden, and I will give you rest." - Matthew 11:28',
-            '"And we know that all things work together for good to those who love God." - Romans 8:28',
-            '"Cast all your anxiety on Him because He cares for you." - 1 Peter 5:7',
-            '"The Lord is close to the brokenhearted and saves those who are crushed in spirit." - Psalm 34:18',
-            '"Fear not, for I am with you; be not dismayed, for I am your God." - Isaiah 41:10',
-            '"The peace of God, which surpasses all understanding, will guard your hearts." - Philippians 4:7'
-        ];
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCurrentDate();
-            loadDailyData();
-            updateAllProgress();
-        });
-
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
-        }
-
-        function showSection(sectionName) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-
-            // Remove active from all tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Show selected section
-            document.getElementById(sectionName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Salvation Assessment Functions
-        function selectSalvationAnswer(element, category, value) {
-            // Clear previous selections in this question
-            element.parentElement.querySelectorAll('.option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            
-            // Select current option
-            element.classList.add('selected');
-            salvationData[category] = value;
-        }
-
-        function calculateSalvationStatus() {
-            const totalScore = Object.values(salvationData).reduce((sum, value) => sum + (value || 0), 0);
-            const resultsDiv = document.getElementById('salvation-results');
-            const levelElement = document.getElementById('salvation-level');
-            const descriptionElement = document.getElementById('salvation-description');
-            const recommendationsElement = document.getElementById('salvation-recommendations');
-
-            let level, description, recommendations;
-
-            if (totalScore >= 10 && salvationData.baptism === 2) {
-                level = "🌟 Mature Christian";
-                description = "Based on your responses, you have followed the biblical plan of salvation and are actively growing in faith.";
-                recommendations = `
-                    <h4>Continue Growing:</h4>
-                    <ul>
-                        <li>Focus on evangelism and teaching others</li>
-                        <li>Develop spiritual mentoring relationships</li>
-                        <li>Consider leadership roles in the congregation</li>
-                        <li>Support mission work and church planting</li>
-                        <li>Maintain consistent worship and service</li>
-                    </ul>
-                `;
-            } else if (totalScore >= 6) {
-                level = "🌱 Growing Christian";
-                description = "You have a good foundation but there are areas for spiritual growth and development.";
-                recommendations = `
-                    <h4>Areas for Growth:</h4>
-                    <ul>
-                        <li>Study discipleship materials regularly</li>
-                        <li>Find a spiritual mentor in the congregation</li>
-                        <li>Attend all Bible classes and worship services</li>
-                        <li>Develop consistent daily Bible reading</li>
-                        <li>Look for opportunities to serve others</li>
-                    </ul>
-                `;
-            } else {
-                level = "🙏 Seeking Truth";
-                description = "It appears you may need to complete some important steps in the biblical plan of salvation.";
-                recommendations = `
-                    <h4>Next Steps:</h4>
-                    <ul>
-                        <li><strong>Study the Gospel plan of salvation</strong></li>
-                        <li>Contact a Church of Christ minister for Bible study</li>
-                        <li>Study Acts 2:36-47 about conversion</li>
-                        <li>Learn about: Hear, Believe, Repent, Confess, Be Baptized</li>
-                        <li>Attend worship services to learn more</li>
-                        <li>Ask questions about salvation and baptism</li>
-                    </ul>
-                `;
-            }
-
-            levelElement.textContent = level;
-            descriptionElement.textContent = description;
-            recommendationsElement.innerHTML = recommendations;
-            resultsDiv.style.display = 'block';
-
-            showAlert('Salvation assessment complete. Please read your personalized recommendations.', 'success');
-        }
-
-        // Biblical Breathing Exercise
-        function startBiblicalBreathing() {
-            if (breathingActive) return;
-            
-            breathingActive = true;
-            const circle = document.getElementById('breathing-circle');
-            const text = document.getElementById('breathing-text');
-            const instruction = document.getElementById('breathing-instruction');
-            let cycleCount = 0;
-
-            function breatheCycle() {
-                if (!breathingActive) return;
-                
-                // Inhale phase (4 seconds)
-                text.textContent = 'Inhale';
-                instruction.textContent = 'Breathe in slowly through your nose...';
-                circle.classList.remove('contract');
-                circle.classList.add('expand');
-                
-                setTimeout(() => {
-                    if (!breathingActive) return;
-                    
-                    // Exhale phase (6 seconds)
-                    text.textContent = 'Exhale';
-                    instruction.textContent = 'Breathe out through pursed lips like through a straw...';
-                    circle.classList.remove('expand');
-                    circle.classList.add('contract');
-                    
-                    setTimeout(() => {
-                        if (!breathingActive) return;
-                        cycleCount++;
-                        
-                        if (cycleCount < 8) {
-                            breatheCycle();
-                        } else {
-                            stopBreathing();
-                            showAlert('Excellent! You completed 8 breathing cycles. May God\'s peace be with you.', 'success');
-                            // Mark breathing goal as completed
-                            markBreathingGoalComplete();
-                        }
-                    }, 6000); // 6 seconds exhale
-                }, 4000); // 4 seconds inhale
-            }
-            
-            breatheCycle();
-        }
-
-        function stopBreathing() {
-            breathingActive = false;
-            const circle = document.getElementById('breathing-circle');
-            const text = document.getElementById('breathing-text');
-            const instruction = document.getElementById('breathing-instruction');
-            
-            circle.classList.remove('expand', 'contract');
-            text.textContent = 'Ready';
-            instruction.textContent = '';
-        }
-
-        function markBreathingGoalComplete() {
-            const goalText = 'Complete 5-minute breathing exercise';
-            if (!dailyData.goals.includes(goalText)) {
-                dailyData.goals.push(goalText);
-                updateGoalCheckbox(goalText);
-                saveDailyData();
-                updateAllProgress();
-            }
-        }
-
-        // Tracking Functions
-        function selectAnxiety(element, value) {
-            element.parentElement.querySelectorAll('.scale-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            dailyData.anxiety = value;
-        }
-
-        function saveAnxietyLevel() {
-            if (dailyData.anxiety !== null) {
-                saveDailyData();
-                const level = dailyData.anxiety;
-                let message = 'Anxiety level recorded. ';
-                if (level >= 7) {
-                    message += 'Remember: "Cast all your anxiety on Him because He cares for you." Consider breathing exercises or prayer.';
-                } else if (level >= 4) {
-                    message += 'Practice biblical breathing and trust in God\'s peace.';
-                } else {
-                    message += 'Praise God for His peace in your life today!';
-                }
-                showAlert(message, level >= 7 ? 'warning' : 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please select an anxiety level first.', 'warning');
-            }
-        }
-
-        function selectConnection(element, value) {
-            element.parentElement.querySelectorAll('.scale-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            dailyData.connection = value;
-        }
-
-        function saveChurchConnection() {
-            if (dailyData.connection !== null) {
-                saveDailyData();
-                const level = dailyData.connection;
-                let message = 'Church connection rating saved! ';
-                if (level <= 3) {
-                    message += 'Consider reaching out to church members or attending fellowship activities.';
-                } else if (level <= 6) {
-                    message += 'Good connection! Look for ways to deepen relationships.';
-                } else {
-                    message += 'Wonderful church connection! Continue building these relationships.';
-                }
-                showAlert(message, 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please rate your church connection first.', 'warning');
-            }
-        }
-
-        function selectRelationship(element, value) {
-            element.parentElement.querySelectorAll('.scale-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            dailyData.relationship = value;
-        }
-
-        function saveRelationshipQuality() {
-            if (dailyData.relationship !== null) {
-                saveDailyData();
-                showAlert('Relationship satisfaction recorded!', 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please rate your relationships first.', 'warning');
-            }
-        }
-
-        function selectStewardship(element, value) {
-            element.parentElement.querySelectorAll('.scale-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            dailyData.stewardship = value;
-        }
-
-        function saveStewardshipRating() {
-            if (dailyData.stewardship !== null) {
-                saveDailyData();
-                showAlert('Body stewardship rating saved! Remember: your body is God\'s temple.', 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please rate your body stewardship first.', 'warning');
-            }
-        }
-
-        function selectEmotion(element, emotion) {
-            document.querySelectorAll('.scale-btn').forEach(btn => {
-                if (btn.textContent.includes('Joyful') || btn.textContent.includes('Peaceful') || 
-                    btn.textContent.includes('Anxious') || btn.textContent.includes('Sad') || 
-                    btn.textContent.includes('Angry') || btn.textContent.includes('Grateful')) {
-                    btn.classList.remove('selected');
-                }
-            });
-            element.classList.add('selected');
-            currentEmotion = emotion;
-        }
-
-        function saveEmotionalState() {
-            if (currentEmotion) {
-                dailyData.emotion = currentEmotion;
-                saveDailyData();
-                showAlert('Emotion recorded! Self-awareness is key to emotional health.', 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please select an emotion first.', 'warning');
-            }
-        }
-
-        // Goal Management
-        function toggleGoal(element) {
-            const checkbox = element.querySelector('.goal-checkbox');
-            checkbox.checked = !checkbox.checked;
-            
-            const goalText = element.querySelector('span').textContent;
-            if (checkbox.checked) {
-                if (!dailyData.goals.includes(goalText)) {
-                    dailyData.goals.push(goalText);
-                }
-            } else {
-                const index = dailyData.goals.indexOf(goalText);
-                if (index > -1) {
-                    dailyData.goals.splice(index, 1);
-                }
-            }
-            
-            saveDailyData();
-            updateAllProgress();
-        }
-
-        function updateGoalCheckbox(goalText) {
-            const goalElements = document.querySelectorAll('.goal-item span');
-            goalElements.forEach(element => {
-                if (element.textContent === goalText) {
-                    const checkbox = element.parentElement.querySelector('.goal-checkbox');
-                    checkbox.checked = true;
-                }
-            });
-        }
-
-        // Content Functions
-        function getNewAffirmation() {
-            const randomAffirmation = biblicalAffirmations[Math.floor(Math.random() * biblicalAffirmations.length)];
-            document.getElementById('daily-affirmation').textContent = randomAffirmation;
-        }
-
-        function getNewScripture() {
-            const randomScripture = strengtheningScriptures[Math.floor(Math.random() * strengtheningScriptures.length)];
-            document.getElementById('daily-verse-text').textContent = randomScripture;
-        }
-
-        function markScriptureRead() {
-            dailyData.scriptureRead = true;
-            saveDailyData();
-            showAlert('Scripture reading marked complete! God\'s word is a lamp to your feet.', 'success');
-            updateAllProgress();
-        }
-
-        // Journal and Goals
-        function saveEmotionalJournal() {
-            const journal = document.getElementById('emotional-journal').value;
-            if (journal.trim()) {
-                dailyData.emotionalJournal = journal;
-                saveDailyData();
-                showAlert('Emotional reflection saved! Continue processing through God\'s truth.', 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please write your emotional reflection first.', 'warning');
-            }
-        }
-
-        function saveSocialGoal() {
-            const goal = document.getElementById('social-goal').value;
-            if (goal.trim()) {
-                dailyData.socialGoal = goal;
-                saveDailyData();
-                showAlert('Social goal saved! Take action to strengthen your relationships.', 'success');
-                updateAllProgress();
-            } else {
-                showAlert('Please write a social goal first.', 'warning');
-            }
-        }
-
-        function saveHealthMetrics() {
-            const steps = document.getElementById('steps-input').value;
-            const sleep = document.getElementById('sleep-input').value;
-            const water = document.getElementById('water-input').value;
-            
-            dailyData.healthMetrics = {
-                steps: parseInt(steps) || 0,
-                sleep: parseFloat(sleep) || 0,
-                water: parseInt(water) || 0
-            };
-            
-            saveDailyData();
-            showAlert('Health metrics saved! Continue honoring God with your body.', 'success');
-            updateAllProgress();
-        }
-
-        // Progress Tracking
-        function updateAllProgress() {
-            updateProgressCircle('mental-progress', calculateMentalProgress());
-            updateProgressCircle('spiritual-progress', calculateSpiritualProgress());
-            updateProgressCircle('social-progress', calculateSocialProgress());
-        }
-
-        function calculateMentalProgress() {
-            let score = 0;
-            if (dailyData.anxiety !== null) score += 20;
-            if (dailyData.goals.some(goal => goal.includes('breathing'))) score += 30;
-            if (dailyData.goals.some(goal => goal.includes('grateful'))) score += 25;
-            if (dailyData.goals.some(goal => goal.includes('grounding'))) score += 25;
-            return Math.min(score, 100);
-        }
-
-        function calculateSpiritualProgress() {
-            let score = 0;
-            if (dailyData.scriptureRead) score += 25;
-            if (dailyData.connection !== null) score += 25;
-            if (dailyData.goals.some(goal => goal.includes('prayer'))) score += 25;
-            if (dailyData.goals.some(goal => goal.includes('Morning prayer'))) score += 25;
-            return Math.min(score, 100);
-        }
-
-        function calculateSocialProgress() {
-            let score = 0;
-            if (dailyData.relationship !== null) score += 30;
-            if (dailyData.socialGoal) score += 30;
-            if (dailyData.goals.some(goal => goal.includes('call') || goal.includes('text') || goal.includes('encourage'))) score += 40;
-            return Math.min(score, 100);
-        }
-
-        function updateProgressCircle(elementId, percentage) {
-            const circle = document.getElementById(elementId);
-            const progressText = circle.querySelector('.progress-text');
-            const degrees = (percentage / 100) * 360;
-            
-            circle.style.background = `conic-gradient(#4CAF50 ${degrees}deg, #e9ecef ${degrees}deg)`;
-            progressText.textContent = `${Math.round(percentage)}%`;
-        }
-
-        // Data Management
-        function saveDailyData() {
-            const today = new Date().toDateString();
-            const dataKey = `wellness_data_${today}`;
-            localStorage.setItem(dataKey, JSON.stringify(dailyData));
-        }
-
-        function loadDailyData() {
-            const today = new Date().toDateString();
-            const dataKey = `wellness_data_${today}`;
-            const savedData = localStorage.getItem(dataKey);
-            
-            if (savedData) {
-                dailyData = JSON.parse(savedData);
-                restoreUIState();
-            }
-        }
-
-        function restoreUIState() {
-            // Restore completed goals
-            dailyData.goals.forEach(goalText => {
-                updateGoalCheckbox(goalText);
-            });
-            
-            // Restore journal entries
-            if (dailyData.emotionalJournal) {
-                const journalArea = document.getElementById('emotional-journal');
-                if (journalArea) journalArea.value = dailyData.emotionalJournal;
-            }
-            
-            if (dailyData.socialGoal) {
-                const socialGoalArea = document.getElementById('social-goal');
-                if (socialGoalArea) socialGoalArea.value = dailyData.socialGoal;
-            }
-            
-            // Restore health metrics
-            if (dailyData.healthMetrics) {
-                const stepsInput = document.getElementById('steps-input');
-                const sleepInput = document.getElementById('sleep-input');
-                const waterInput = document.getElementById('water-input');
-                
-                if (stepsInput) stepsInput.value = dailyData.healthMetrics.steps;
-                if (sleepInput) sleepInput.value = dailyData.healthMetrics.sleep;
-                if (waterInput) waterInput.value = dailyData.healthMetrics.water;
-            }
-
-            // Restore scale selections
-            if (dailyData.anxiety !== null) {
-                const anxietyBtns = document.querySelectorAll('#anxiety-scale .scale-btn');
-                if (anxietyBtns[dailyData.anxiety - 1]) {
-                    anxietyBtns[dailyData.anxiety - 1].classList.add('selected');
-                }
-            }
-
-            if (dailyData.connection !== null) {
-                const connectionBtns = document.querySelectorAll('#church-connection .scale-btn');
-                if (connectionBtns[dailyData.connection - 1]) {
-                    connectionBtns[dailyData.connection - 1].classList.add('selected');
-                }
-            }
-
-            if (dailyData.relationship !== null) {
-                const relationshipBtns = document.querySelectorAll('#relationship-quality .scale-btn');
-                if (relationshipBtns[dailyData.relationship - 1]) {
-                    relationshipBtns[dailyData.relationship - 1].classList.add('selected');
-                }
-            }
-
-            if (dailyData.stewardship !== null) {
-                const stewardshipBtns = document.querySelectorAll('#body-stewardship .scale-btn');
-                if (stewardshipBtns[dailyData.stewardship - 1]) {
-                    stewardshipBtns[dailyData.stewardship - 1].classList.add('selected');
-                }
-            }
-        }
-
-        // Alert System
-        function showAlert(message, type = 'info') {
-            // Create alert element
-            const alert = document.createElement('div');
-            alert.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                border-radius: 10px;
-                color: white;
-                font-weight: bold;
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-                max-width: 350px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            `;
-            
-            // Set background color based on type
-            switch(type) {
-                case 'success':
-                    alert.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-                    break;
-                case 'warning':
-                    alert.style.background = 'linear-gradient(135deg, #FF9800, #F57C00)';
-                    break;
-                case 'error':
-                    alert.style.background = 'linear-gradient(135deg, #f44336, #D32F2F)';
-                    break;
-                default:
-                    alert.style.background = 'linear-gradient(135deg, #2196F3, #1976D2)';
-            }
-            
-            alert.textContent = message;
-            document.body.appendChild(alert);
-            
-            // Remove after 4 seconds
-            setTimeout(() => {
-                alert.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (document.body.contains(alert)) {
-                        document.body.removeChild(alert);
-                    }
-                }, 300);
-            }, 4000);
-        }
-
-        // Add CSS animations dynamically
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-
-            .breathing-circle.expand {
-                transform: scale(1.5);
-                transition: transform 4s ease-in-out;
-            }
-
-            .breathing-circle.contract {
-                transform: scale(0.8);
-                transition: transform 6s ease-in-out;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Additional helper functions for comprehensive tracking
-        function generateDailyReport() {
-            const report = {
-                date: new Date().toDateString(),
-                mentalHealth: {
-                    anxiety: dailyData.anxiety,
-                    goalsCompleted: dailyData.goals.filter(g => 
-                        g.includes('breathing') || g.includes('grateful') || g.includes('grounding')
-                    ).length
-                },
-                spiritualHealth: {
-                    connection: dailyData.connection,
-                    scriptureRead: dailyData.scriptureRead,
-                    prayerGoals: dailyData.goals.filter(g => g.includes('prayer')).length
-                },
-                socialHealth: {
-                    relationship: dailyData.relationship,
-                    socialGoal: dailyData.socialGoal !== '',
-                    connectionGoals: dailyData.goals.filter(g => 
-                        g.includes('call') || g.includes('text') || g.includes('encourage')
-                    ).length
-                },
-                emotionalHealth: {
-                    emotion: dailyData.emotion,
-                    journaled: dailyData.emotionalJournal !== ''
-                },
-                physicalHealth: {
-                    stewardship: dailyData.stewardship,
-                    healthMetrics: dailyData.healthMetrics
-                },
-                totalGoalsCompleted: dailyData.goals.length
-            };
-            return report;
-        }
-
-        function exportDailyData() {
-            const report = generateDailyReport();
-            const dataStr = JSON.stringify(report, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `wellness_report_${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-        }
-
-        // Keyboard shortcuts for power users
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case '1':
-                        e.preventDefault();
-                        showSection('dashboard');
-                        break;
-                    case '2':
-                        e.preventDefault();
-                        showSection('assessment');
-                        break;
-                    case '3':
-                        e.preventDefault();
-                        showSection('mental');
-                        break;
-                    case '4':
-                        e.preventDefault();
-                        showSection('spiritual');
-                        break;
-                    case '5':
-                        e.preventDefault();
-                        showSection('social');
-                        break;
-                    case '6':
-                        e.preventDefault();
-                        showSection('emotional');
-                        break;
-                    case '7':
-                        e.preventDefault();
-                        showSection('physical');
-                        break;
-                    case 's':
-                        e.preventDefault();
-                        saveDailyData();
-                        showAlert('Data saved manually!', 'success');
-                        break;
-                }
-            }
-        });
-
-        // Auto-save every 30 seconds
-        setInterval(saveDailyData, 30000);
-
-        // Show welcome message on first load
-        setTimeout(() => {
-            if (!localStorage.getItem('wellness_welcomed')) {
-                showAlert('Welcome to your 5-Pillar Wellness Journey! Use Ctrl+1-7 for quick navigation.', 'info');
-                localStorage.setItem('wellness_welcomed', 'true');
-            }
-        }, 1000);
-    </script>
-</body>
-</html>="daily-affirmations">
+                <div class="daily-affirmations">
                     <h3>🌅 Today's Biblical Affirmation</h3>
                     <div class="affirmation-text" id="daily-affirmation">
                         "I am fearfully and wonderfully made by God (Psalm 139:14)"
@@ -1495,7 +579,7 @@
 
                 <button class="btn btn-warning" onclick="calculateSalvationStatus()">Assess My Salvation Status</button>
 
-                <div id="salvation-results" class="salvation-status" style="display: none;">
+                <div id="salvation-results" class="salvation-status">
                     <h3 id="salvation-level"></h3>
                     <p id="salvation-description"></p>
                     <div id="salvation-recommendations"></div>
@@ -1537,19 +621,19 @@
                     <div style="margin: 15px 0;">
                         <label><strong>Current Anxiety Level (1-10):</strong></label>
                         <div class="scale-container" id="anxiety-scale">
-                            <div class="scale-btn" onclick="selectAnxiety(this, 1)">1</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 2)">2</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 3)">3</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 4)">4</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 5)">5</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 6)">6</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 7)">7</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 8)">8</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 9)">9</div>
-                            <div class="scale-btn" onclick="selectAnxiety(this, 10)">10</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 1)">1</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 2)">2</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 3)">3</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 4)">4</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 5)">5</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 6)">6</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 7)">7</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 8)">8</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 9)">9</div>
+                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 10)">10</div>
                         </div>
                     </div>
-                    <button class="btn" onclick="saveAnxietyLevel()">Save Anxiety Level</button>
+                    <button class="btn" onclick="saveData('anxiety')">Save Anxiety Level</button>
                 </div>
 
                 <div class="pillar-card mental-card">
@@ -1632,21 +716,4 @@
                 <div class="pillar-card spiritual-card">
                     <h3>⛪ Church Connection Assessment</h3>
                     <div style="margin: 15px 0;">
-                        <label><strong>How connected do you feel to your church family today? (1-10):</strong></label>
-                        <div class="scale-container" id="church-connection">
-                            <div class="scale-btn" onclick="selectConnection(this, 1)">1</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 2)">2</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 3)">3</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 4)">4</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 5)">5</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 6)">6</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 7)">7</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 8)">8</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 9)">9</div>
-                            <div class="scale-btn" onclick="selectConnection(this, 10)">10</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-warning" onclick="saveChurchConnection()">Save Rating</button>
-                </div>
-
-                <div class
+                        <label><strong>How connected do you feel to your church family
