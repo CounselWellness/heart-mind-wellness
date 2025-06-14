@@ -13,7 +13,12 @@ const WellnessApp = () => {
     salvationData: {},
     healthMetrics: { steps: 0, sleep: 0, water: 0 },
     emotionalJournal: '',
-    socialGoal: ''
+    socialGoal: '',
+    prayerJournal: '',
+    gratitudeJournal: '',
+    mentalHealthJournal: '',
+    spiritualJournal: '',
+    physicalJournal: ''
   });
   const [breathingActive, setBreathingActive] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState('ready');
@@ -47,7 +52,23 @@ const WellnessApp = () => {
     }));
     setCurrentAffirmation(affirmations[0]);
     setCurrentScripture(scriptures[0]);
+    
+    // Load saved data from localStorage
+    const savedData = localStorage.getItem('wellnessAppData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setAppData(prevData => ({ ...prevData, ...parsedData }));
+      } catch (error) {
+        console.log('Error loading saved data:', error);
+      }
+    }
   }, []);
+
+  // Save data to localStorage whenever appData changes
+  useEffect(() => {
+    localStorage.setItem('wellnessAppData', JSON.stringify(appData));
+  }, [appData]);
 
   // Navigation function
   const showSection = (sectionName) => {
@@ -190,6 +211,11 @@ const WellnessApp = () => {
     alert('Health metrics saved!');
   };
 
+  // Journal saving functions
+  const saveJournalEntry = (journalType) => {
+    alert(`${journalType.charAt(0).toUpperCase() + journalType.slice(1)} journal entry saved privately on your device!`);
+  };
+
   // Scale button component
   const ScaleButton = ({ value, selected, onClick, type }) => (
     <button
@@ -286,11 +312,29 @@ const WellnessApp = () => {
                   {currentAffirmation}
                 </div>
                 <button 
-                  className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
+                  className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300 mb-4"
                   onClick={getNewAffirmation}
                 >
                   New Affirmation
                 </button>
+                
+                {/* Gratitude Journal */}
+                <div className="mt-4">
+                  <h4 className="font-bold mb-2">🙏 Daily Gratitude Journal</h4>
+                  <p className="text-sm text-gray-600 mb-2">List 3-5 things you're grateful for today:</p>
+                  <textarea 
+                    className="w-full min-h-24 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none resize-vertical"
+                    placeholder="Today I'm grateful for... 1. 2. 3."
+                    value={appData.gratitudeJournal}
+                    onChange={(e) => setAppData(prev => ({ ...prev, gratitudeJournal: e.target.value }))}
+                  />
+                  <button 
+                    className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors duration-300 mt-2"
+                    onClick={() => saveJournalEntry('gratitude')}
+                  >
+                    Save Gratitude Entry
+                  </button>
+                </div>
               </div>
 
               {/* Pillar Cards */}
