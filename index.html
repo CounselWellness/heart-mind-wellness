@@ -1,719 +1,1062 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5-Pillar Mental Wellness Daily Companion</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+import React, { useState, useEffect } from 'react';
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+const WellnessApp = () => {
+  // State management
+  const [activeSection, setActiveSection] = useState('dashboard');
+  const [appData, setAppData] = useState({
+    anxiety: null,
+    connection: null,
+    relationship: null,
+    stewardship: null,
+    emotion: null,
+    goals: [],
+    salvationData: {},
+    healthMetrics: { steps: 0, sleep: 0, water: 0 },
+    emotionalJournal: '',
+    socialGoal: ''
+  });
+  const [breathingActive, setBreathingActive] = useState(false);
+  const [breathingPhase, setBreathingPhase] = useState('ready');
+  const [currentDate, setCurrentDate] = useState('');
+  const [currentAffirmation, setCurrentAffirmation] = useState('');
+  const [currentScripture, setCurrentScripture] = useState('');
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+  // Biblical content
+  const affirmations = [
+    "I am fearfully and wonderfully made by God (Psalm 139:14)",
+    "I can do all things through Christ who strengthens me (Philippians 4:13)",
+    "God has a plan and purpose for my life (Jeremiah 29:11)",
+    "I am more than a conqueror through Christ (Romans 8:37)",
+    "God will never leave me nor forsake me (Hebrews 13:5)",
+    "I am a new creation in Christ (2 Corinthians 5:17)"
+  ];
 
-        .header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+  const scriptures = [
+    "Trust in the Lord with all your heart, and lean not on your own understanding. - Proverbs 3:5",
+    "I can do all things through Christ who strengthens me. - Philippians 4:13",
+    "Be strong and of good courage; do not be afraid, for the Lord your God is with you. - Joshua 1:9",
+    "Cast all your anxiety on Him because He cares for you. - 1 Peter 5:7",
+    "The Lord is close to the brokenhearted and saves those who are crushed in spirit. - Psalm 34:18"
+  ];
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+  // Initialize app
+  useEffect(() => {
+    const now = new Date();
+    setCurrentDate(now.toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    }));
+    setCurrentAffirmation(affirmations[0]);
+    setCurrentScripture(scriptures[0]);
+  }, []);
 
-        .client-info {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
+  // Navigation function
+  const showSection = (sectionName) => {
+    setActiveSection(sectionName);
+  };
 
-        .nav-tabs {
-            display: flex;
-            background: #f8f9fa;
-            overflow-x: auto;
-        }
+  // Scale selection
+  const selectScale = (type, value) => {
+    setAppData(prev => ({ ...prev, [type]: value }));
+  };
 
-        .nav-tab {
-            flex: 1;
-            padding: 15px;
-            background: #e9ecef;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-            min-width: 120px;
-            font-size: 0.9em;
-        }
+  // Save data function
+  const saveData = (type) => {
+    if (appData[type] !== null) {
+      alert(`${type.charAt(0).toUpperCase() + type.slice(1)} level saved!`);
+    } else {
+      alert('Please make a selection first.');
+    }
+  };
 
-        .nav-tab:hover {
-            background: #dee2e6;
-        }
+  // Salvation assessment
+  const selectSalvationAnswer = (category, value) => {
+    setAppData(prev => ({
+      ...prev,
+      salvationData: { ...prev.salvationData, [category]: value }
+    }));
+  };
 
-        .nav-tab.active {
-            background: white;
-            border-bottom-color: #4CAF50;
-            color: #4CAF50;
-        }
+  const calculateSalvationStatus = () => {
+    const scores = Object.values(appData.salvationData);
+    if (scores.length < 6) {
+      alert('Please answer all questions first.');
+      return;
+    }
 
-        .content {
-            padding: 30px;
-            min-height: 600px;
-        }
+    const total = scores.reduce((sum, score) => sum + score, 0);
+    let level, description;
 
-        .section {
-            display: none;
-        }
+    if (total >= 10 && appData.salvationData.baptism === 2) {
+      level = "🌟 Mature Christian";
+      description = "You have followed the biblical plan of salvation and are growing in faith.";
+    } else if (total >= 6) {
+      level = "🌱 Growing Christian";
+      description = "Good foundation with areas for spiritual growth.";
+    } else {
+      level = "🙏 Seeking Truth";
+      description = "Important steps needed in the biblical plan of salvation.";
+    }
 
-        .section.active {
-            display: block;
-        }
+    alert(`Salvation Assessment: ${level} - ${description}`);
+  };
 
-        .pillar-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-left: 5px solid #4CAF50;
-        }
+  // Breathing exercise
+  const startBiblicalBreathing = () => {
+    if (breathingActive) return;
+    setBreathingActive(true);
+    breatheCycle(0);
+  };
 
-        .mental-card { border-left-color: #4CAF50; background: linear-gradient(135deg, #e8f5e8, #c8e6c9); }
-        .spiritual-card { border-left-color: #FF9800; background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
-        .social-card { border-left-color: #2196F3; background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
-        .emotional-card { border-left-color: #e91e63; background: linear-gradient(135deg, #fce4ec, #f8bbd9); }
-        .physical-card { border-left-color: #9c27b0; background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+  const breatheCycle = (cycles) => {
+    if (cycles >= 8) {
+      stopBreathing();
+      alert('Great job! You completed the breathing exercise.');
+      return;
+    }
 
-        .btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            margin: 10px 5px;
-        }
+    // Inhale phase (4 seconds)
+    setBreathingPhase('inhale');
+    setTimeout(() => {
+      if (!breathingActive) return;
+      // Exhale phase (6 seconds)
+      setBreathingPhase('exhale');
+      setTimeout(() => {
+        if (!breathingActive) return;
+        breatheCycle(cycles + 1);
+      }, 6000); // 6 seconds exhale
+    }, 4000); // 4 seconds inhale
+  };
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
+  const stopBreathing = () => {
+    setBreathingActive(false);
+    setBreathingPhase('ready');
+  };
 
-        .btn-warning { background: linear-gradient(135deg, #FF9800, #F57C00); }
-        .btn-primary { background: linear-gradient(135deg, #2196F3, #1976D2); }
-        .btn-danger { background: linear-gradient(135deg, #f44336, #D32F2F); }
-        .btn-secondary { background: linear-gradient(135deg, #6c757d, #5a6268); }
+  // Goals management
+  const toggleGoal = (goalText) => {
+    setAppData(prev => {
+      const goals = prev.goals.includes(goalText)
+        ? prev.goals.filter(g => g !== goalText)
+        : [...prev.goals, goalText];
+      return { ...prev, goals };
+    });
+  };
 
-        .breathing-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 30px 0;
-            text-align: center;
-        }
+  // Emotion selection
+  const selectEmotion = (emotion) => {
+    setAppData(prev => ({ ...prev, emotion }));
+  };
 
-        .breathing-instructions {
-            background: #e8f5e8;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid #4CAF50;
-        }
+  const saveEmotion = () => {
+    if (appData.emotion) {
+      alert('Emotion recorded! Self-awareness helps emotional health.');
+    } else {
+      alert('Please select an emotion first.');
+    }
+  };
 
-        .breathing-circle {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4CAF50, #81C784);
-            margin: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2em;
-            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
-            transition: transform 1s ease-in-out;
-        }
+  // Content functions
+  const getNewAffirmation = () => {
+    const random = affirmations[Math.floor(Math.random() * affirmations.length)];
+    setCurrentAffirmation(random);
+  };
 
-        .breathing-circle.expand {
-            transform: scale(1.5);
-            transition: transform 4s ease-in-out;
-        }
+  const getNewScripture = () => {
+    const random = scriptures[Math.floor(Math.random() * scriptures.length)];
+    setCurrentScripture(random);
+  };
 
-        .breathing-circle.contract {
-            transform: scale(0.8);
-            transition: transform 6s ease-in-out;
-        }
+  const markScriptureRead = () => {
+    alert('Scripture reading marked complete!');
+  };
 
-        .bible-verse {
-            background: #f0f8ff;
-            border-left: 4px solid #4169e1;
-            padding: 15px;
-            margin: 15px 0;
-            font-style: italic;
-            border-radius: 5px;
-        }
+  const saveEmotionalJournal = () => {
+    if (appData.emotionalJournal.trim()) {
+      alert('Emotional reflection saved!');
+    } else {
+      alert('Please write your reflection first.');
+    }
+  };
 
-        .church-of-christ-info {
-            background: #fff8e1;
-            border-left: 4px solid #ffc107;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 5px;
-        }
+  const saveSocialGoal = () => {
+    if (appData.socialGoal.trim()) {
+      alert('Social goal saved!');
+    } else {
+      alert('Please write a social goal first.');
+    }
+  };
 
-        .assessment-question {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            border-left: 4px solid #FF9800;
-        }
+  const saveHealthMetrics = () => {
+    alert('Health metrics saved!');
+  };
 
-        .question {
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-        }
+  // Scale button component
+  const ScaleButton = ({ value, selected, onClick, type }) => (
+    <button
+      className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold transition-all duration-300 ${
+        selected 
+          ? 'border-green-500 bg-green-500 text-white' 
+          : 'border-gray-300 bg-white hover:bg-gray-100'
+      }`}
+      onClick={() => onClick(type, value)}
+    >
+      {value}
+    </button>
+  );
 
-        .options {
-            display: grid;
-            gap: 10px;
-        }
+  // Option button for salvation assessment
+  const OptionButton = ({ children, selected, onClick }) => (
+    <button
+      className={`p-3 border-2 rounded-lg transition-all duration-300 text-left w-full ${
+        selected 
+          ? 'border-orange-500 bg-orange-50 font-bold' 
+          : 'border-gray-200 bg-gray-50 hover:border-orange-500 hover:bg-orange-50'
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
 
-        .option {
-            padding: 12px 15px;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+  // Goal item component
+  const GoalItem = ({ text, checked, onToggle }) => (
+    <div
+      className="flex items-center p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors duration-300"
+      onClick={() => onToggle(text)}
+    >
+      <input 
+        type="checkbox" 
+        checked={checked}
+        readOnly
+        className="mr-4 w-5 h-5"
+      />
+      <span>{text}</span>
+    </div>
+  );
 
-        .option:hover {
-            border-color: #FF9800;
-            background: #fff8e1;
-        }
-
-        .option.selected {
-            border-color: #FF9800;
-            background: #fff3e0;
-            font-weight: bold;
-        }
-
-        .scale-container {
-            display: flex;
-            justify-content: space-between;
-            margin: 15px 0;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .scale-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid #ddd;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .scale-btn:hover {
-            background: #f0f0f0;
-            transform: scale(1.1);
-        }
-
-        .scale-btn.selected {
-            border-color: #4CAF50;
-            background: #4CAF50;
-            color: white;
-        }
-
-        .goals-checklist {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-        }
-
-        .goal-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .goal-item:hover {
-            background: #f8f9fa;
-        }
-
-        .goal-checkbox {
-            margin-right: 15px;
-            width: 20px;
-            height: 20px;
-            accent-color: #4CAF50;
-        }
-
-        .progress-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: conic-gradient(#4CAF50 0deg, #e9ecef 0deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px auto;
-            position: relative;
-        }
-
-        .progress-circle::before {
-            content: '';
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: white;
-            position: absolute;
-        }
-
-        .progress-text {
-            position: relative;
-            font-weight: bold;
-            font-size: 1.2em;
-            z-index: 1;
-        }
-
-        .emergency-contacts {
-            background: #ffebee;
-            border: 2px solid #f44336;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .contact-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .journal-area {
-            width: 100%;
-            min-height: 120px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 1em;
-            resize: vertical;
-        }
-
-        .journal-area:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-
-        .daily-affirmations {
-            background: #f0f8ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            border-left: 4px solid #4169e1;
-        }
-
-        .affirmation-text {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #1976D2;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .salvation-status {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #2196F3;
-            display: none;
-        }
-
-        .emotion-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-
-        .emotion-btn {
-            width: auto;
-            height: 60px;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-        }
-
-        .emotion-btn:hover {
-            background: #f0f0f0;
-            transform: scale(1.05);
-        }
-
-        .emotion-btn.selected {
-            border-color: #4CAF50;
-            background: #e8f5e8;
-        }
-
-        @media (max-width: 768px) {
-            .nav-tabs {
-                flex-direction: column;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .scale-container {
-                justify-content: center;
-            }
-
-            .scale-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🌟 Daily Wellness Companion</h1>
-            <p>Mental • Spiritual • Social • Emotional • Physical</p>
-            <div class="client-info">
-                <p><strong>Welcome back!</strong> Your biblical wellness journey continues today.</p>
-                <p id="current-date"></p>
-            </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-purple-700 p-5">
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-8 text-center">
+          <h1 className="text-4xl font-bold mb-3">🌟 Daily Wellness Companion</h1>
+          <p className="text-xl opacity-90">Mental • Spiritual • Social • Emotional • Physical</p>
+          <div className="bg-white bg-opacity-10 rounded-lg p-4 mt-4">
+            <p className="font-bold">Welcome back! Your biblical wellness journey continues today.</p>
+            <p>{currentDate}</p>
+          </div>
         </div>
 
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showSection('dashboard')">Dashboard</button>
-            <button class="nav-tab" onclick="showSection('assessment')">Salvation Check</button>
-            <button class="nav-tab" onclick="showSection('mental')">Mental</button>
-            <button class="nav-tab" onclick="showSection('spiritual')">Spiritual</button>
-            <button class="nav-tab" onclick="showSection('social')">Social</button>
-            <button class="nav-tab" onclick="showSection('emotional')">Emotional</button>
-            <button class="nav-tab" onclick="showSection('physical')">Physical</button>
+        {/* Navigation Tabs */}
+        <div className="flex bg-gray-100 overflow-x-auto">
+          {[
+            { id: 'dashboard', label: 'Dashboard' },
+            { id: 'assessment', label: 'Salvation Assessment' },
+            { id: 'mental', label: 'Mental' },
+            { id: 'spiritual', label: 'Spiritual' },
+            { id: 'social', label: 'Social' },
+            { id: 'emotional', label: 'Emotional' },
+            { id: 'physical', label: 'Physical' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              className={`flex-1 p-4 font-bold transition-all duration-300 border-b-4 min-w-32 ${
+                activeSection === tab.id
+                  ? 'bg-white border-green-500 text-green-500'
+                  : 'bg-gray-200 border-transparent hover:bg-gray-300'
+              }`}
+              onClick={() => showSection(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <div class="content">
-            <!-- Dashboard Section -->
-            <div id="dashboard" class="section active">
-                <h2>📊 Today's Wellness Dashboard</h2>
-                
-                <div class="daily-affirmations">
-                    <h3>🌅 Today's Biblical Affirmation</h3>
-                    <div class="affirmation-text" id="daily-affirmation">
-                        "I am fearfully and wonderfully made by God (Psalm 139:14)"
-                    </div>
-                    <button class="btn btn-primary" onclick="getNewAffirmation()">New Affirmation</button>
+        {/* Content */}
+        <div className="p-8 min-h-96">
+          {/* Dashboard Section */}
+          {activeSection === 'dashboard' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">📊 Today's Wellness Dashboard</h2>
+              
+              {/* Daily Affirmations */}
+              <div className="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🌅 Today's Biblical Affirmation</h3>
+                <div className="text-lg font-bold text-blue-700 text-center my-4">
+                  {currentAffirmation}
+                </div>
+                <button 
+                  className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
+                  onClick={getNewAffirmation}
+                >
+                  New Affirmation
+                </button>
+              </div>
+
+              {/* Pillar Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div className="bg-gradient-to-br from-green-100 to-green-200 border-l-4 border-green-500 rounded-lg p-6">
+                  <h3 className="text-xl font-bold mb-3">🧠 Mental Wellness</h3>
+                  <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center font-bold">0%</div>
+                  </div>
+                  <p className="mb-4">Focus: Anxiety & Stress Management</p>
+                  <button 
+                    className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors duration-300"
+                    onClick={() => showSection('mental')}
+                  >
+                    Explore Mental
+                  </button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
-                    <div class="pillar-card mental-card">
-                        <h3>🧠 Mental Wellness</h3>
-                        <div class="progress-circle" id="mental-progress">
-                            <div class="progress-text">0%</div>
-                        </div>
-                        <p>Focus: Anxiety & Stress Management</p>
-                        <button class="btn" onclick="showSection('mental')">Explore Mental</button>
-                    </div>
-                    
-                    <div class="pillar-card spiritual-card">
-                        <h3>✝️ Spiritual Wellness</h3>
-                        <div class="progress-circle" id="spiritual-progress">
-                            <div class="progress-text">0%</div>
-                        </div>
-                        <p>Focus: Prayer, Scripture & Salvation</p>
-                        <button class="btn btn-warning" onclick="showSection('spiritual')">Explore Spiritual</button>
-                    </div>
-                    
-                    <div class="pillar-card social-card">
-                        <h3>👥 Social Wellness</h3>
-                        <div class="progress-circle" id="social-progress">
-                            <div class="progress-text">0%</div>
-                        </div>
-                        <p>Focus: Church & Family Connections</p>
-                        <button class="btn btn-primary" onclick="showSection('social')">Explore Social</button>
-                    </div>
+                <div className="bg-gradient-to-br from-orange-100 to-orange-200 border-l-4 border-orange-500 rounded-lg p-6">
+                  <h3 className="text-xl font-bold mb-3">✝️ Spiritual Wellness</h3>
+                  <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center font-bold">0%</div>
+                  </div>
+                  <p className="mb-4">Focus: Prayer, Scripture & Salvation</p>
+                  <button 
+                    className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-colors duration-300"
+                    onClick={() => showSection('spiritual')}
+                  >
+                    Explore Spiritual
+                  </button>
                 </div>
 
-                <div class="bible-verse">
-                    <strong>"Beloved, I pray that you may prosper in all things and be in health, just as your soul prospers."</strong> - 3 John 1:2
+                <div className="bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-500 rounded-lg p-6">
+                  <h3 className="text-xl font-bold mb-3">👥 Social Wellness</h3>
+                  <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center font-bold">0%</div>
+                  </div>
+                  <p className="mb-4">Focus: Church & Family Connections</p>
+                  <button 
+                    className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
+                    onClick={() => showSection('social')}
+                  >
+                    Explore Social
+                  </button>
                 </div>
+              </div>
 
-                <div class="emergency-contacts">
-                    <h3>🚨 Crisis Resources</h3>
-                    <p>If you're experiencing a mental health crisis or thoughts of self-harm:</p>
-                    <a href="tel:988" class="contact-btn">🆘 Crisis Lifeline: 988</a>
-                    <a href="tel:911" class="contact-btn">🚑 Emergency: 911</a>
-                    <a href="tel:555-123-4567" class="contact-btn">⛪ Church Minister</a>
-                    <a href="tel:555-987-6543" class="contact-btn">👨‍⚕️ Counselor</a>
+              {/* Bible Verse */}
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6 rounded italic">
+                <strong>"Beloved, I pray that you may prosper in all things and be in health, just as your soul prospers."</strong> - 3 John 1:2
+              </div>
+
+              {/* Emergency Contacts */}
+              <div className="bg-red-50 border-2 border-red-400 rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-3">🚨 Crisis Resources</h3>
+                <p className="mb-4">If you're experiencing a mental health crisis or thoughts of self-harm:</p>
+                <div className="space-x-2">
+                  <a href="tel:988" className="bg-red-500 text-white px-4 py-2 rounded inline-block hover:bg-red-600 transition-colors duration-300">🆘 Crisis Lifeline: 988</a>
+                  <a href="tel:911" className="bg-red-500 text-white px-4 py-2 rounded inline-block hover:bg-red-600 transition-colors duration-300">🚑 Emergency: 911</a>
+                  <a href="tel:555-123-4567" className="bg-red-500 text-white px-4 py-2 rounded inline-block hover:bg-red-600 transition-colors duration-300">⛪ Church Minister</a>
                 </div>
+              </div>
             </div>
+          )}
 
-            <!-- Salvation Assessment Section -->
-            <div id="assessment" class="section">
-                <h2>✝️ Church of Christ Salvation Assessment</h2>
-                
-                <div class="church-of-christ-info">
-                    <h3>📖 Biblical Foundation</h3>
-                    <p>This assessment is based on the New Testament plan of salvation as practiced in Churches of Christ. According to Scripture, salvation requires:</p>
-                    <ul style="margin: 10px 0 0 20px;">
-                        <li><strong>Hearing</strong> the Gospel (Romans 10:17)</li>
-                        <li><strong>Believing</strong> in Jesus Christ (Mark 16:16)</li>
-                        <li><strong>Repenting</strong> of sins (Acts 2:38)</li>
-                        <li><strong>Confessing</strong> Jesus as Lord (Romans 10:9-10)</li>
-                        <li><strong>Being baptized</strong> by immersion for forgiveness (Acts 2:38, Mark 16:16)</li>
-                        <li><strong>Living faithfully</strong> as a Christian (Revelation 2:10)</li>
-                    </ul>
+          {/* Salvation Assessment Section */}
+          {activeSection === 'assessment' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">✝️ Salvation Assessment</h2>
+              
+              {/* Biblical Foundation */}
+              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6 rounded">
+                <h3 className="text-xl font-bold mb-3">📖 Biblical Foundation</h3>
+                <p className="mb-3">This assessment is based on the New Testament plan of salvation as practiced in Churches of Christ. According to Scripture, salvation requires:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li><strong>Hearing</strong> the Gospel (Romans 10:17)</li>
+                  <li><strong>Believing</strong> in Jesus Christ (Mark 16:16)</li>
+                  <li><strong>Repenting</strong> of sins (Acts 2:38)</li>
+                  <li><strong>Confessing</strong> Jesus as Lord (Romans 10:9-10)</li>
+                  <li><strong>Being baptized</strong> by immersion for forgiveness (Acts 2:38, Mark 16:16)</li>
+                  <li><strong>Living faithfully</strong> as a Christian (Revelation 2:10)</li>
+                </ul>
+              </div>
+
+              {/* Assessment Questions */}
+              <div className="space-y-6">
+                <div className="bg-white border-l-4 border-orange-500 p-6 rounded">
+                  <div className="font-bold mb-4">1. Have you heard and understood the Gospel of Jesus Christ?</div>
+                  <div className="space-y-2">
+                    <OptionButton 
+                      selected={appData.salvationData.gospel === 2}
+                      onClick={() => selectSalvationAnswer('gospel', 2)}
+                    >
+                      Yes, I clearly understand Jesus died for my sins and rose again
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.gospel === 1}
+                      onClick={() => selectSalvationAnswer('gospel', 1)}
+                    >
+                      Somewhat - I know some basics about Jesus
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.gospel === 0}
+                      onClick={() => selectSalvationAnswer('gospel', 0)}
+                    >
+                      No or unsure - Would like to learn more
+                    </OptionButton>
+                  </div>
                 </div>
 
-                <div class="assessment-question">
-                    <div class="question">1. Have you heard and understood the Gospel of Jesus Christ?</div>
-                    <div class="options">
-                        <div class="option" onclick="selectSalvationAnswer(this, 'gospel', 2)">Yes, I clearly understand Jesus died for my sins and rose again</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'gospel', 1)">Somewhat - I know some basics about Jesus</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'gospel', 0)">No or unsure - Would like to learn more</div>
-                    </div>
+                <div className="bg-white border-l-4 border-orange-500 p-6 rounded">
+                  <div className="font-bold mb-4">2. Do you believe that Jesus Christ is the Son of God and your personal Savior?</div>
+                  <div className="space-y-2">
+                    <OptionButton 
+                      selected={appData.salvationData.believe === 2}
+                      onClick={() => selectSalvationAnswer('believe', 2)}
+                    >
+                      Yes, with complete faith and conviction
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.believe === 1}
+                      onClick={() => selectSalvationAnswer('believe', 1)}
+                    >
+                      I think so, but have some doubts
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.believe === 0}
+                      onClick={() => selectSalvationAnswer('believe', 0)}
+                    >
+                      No or very unsure
+                    </OptionButton>
+                  </div>
                 </div>
 
-                <div class="assessment-question">
-                    <div class="question">2. Do you believe that Jesus Christ is the Son of God and your personal Savior?</div>
-                    <div class="options">
-                        <div class="option" onclick="selectSalvationAnswer(this, 'believe', 2)">Yes, with complete faith and conviction</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'believe', 1)">I think so, but have some doubts</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'believe', 0)">No or very unsure</div>
-                    </div>
+                <div className="bg-white border-l-4 border-orange-500 p-6 rounded">
+                  <div className="font-bold mb-4">3. Have you confessed Jesus Christ as Lord before others?</div>
+                  <div className="space-y-2">
+                    <OptionButton 
+                      selected={appData.salvationData.confess === 2}
+                      onClick={() => selectSalvationAnswer('confess', 2)}
+                    >
+                      Yes, publicly before the church
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.confess === 1}
+                      onClick={() => selectSalvationAnswer('confess', 1)}
+                    >
+                      Yes, but only privately or to a few people
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.confess === 0}
+                      onClick={() => selectSalvationAnswer('confess', 0)}
+                    >
+                      No, I have not made this confession
+                    </OptionButton>
+                  </div>
                 </div>
 
-                <div class="assessment-question">
-                    <div class="question">3. Have you confessed Jesus Christ as Lord before others?</div>
-                    <div class="options">
-                        <div class="option" onclick="selectSalvationAnswer(this, 'confess', 2)">Yes, publicly before the church</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'confess', 1)">Yes, but only privately or to a few people</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'confess', 0)">No, I have not made this confession</div>
-                    </div>
+                <div className="bg-white border-l-4 border-orange-500 p-6 rounded">
+                  <div className="font-bold mb-4">4. Have you genuinely repented of your sins?</div>
+                  <div className="space-y-2">
+                    <OptionButton 
+                      selected={appData.salvationData.repent === 2}
+                      onClick={() => selectSalvationAnswer('repent', 2)}
+                    >
+                      Yes, I have turned away from sin with a changed heart
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.repent === 1}
+                      onClick={() => selectSalvationAnswer('repent', 1)}
+                    >
+                      I try to do better but struggle with consistency
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.repent === 0}
+                      onClick={() => selectSalvationAnswer('repent', 0)}
+                    >
+                      No or unsure what true repentance means
+                    </OptionButton>
+                  </div>
                 </div>
 
-                <div class="assessment-question">
-                    <div class="question">4. Have you genuinely repented of your sins?</div>
-                    <div class="options">
-                        <div class="option" onclick="selectSalvationAnswer(this, 'repent', 2)">Yes, I have turned away from sin with a changed heart</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'repent', 1)">I try to do better but struggle with consistency</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'repent', 0)">No or unsure what true repentance means</div>
-                    </div>
+                <div className="bg-white border-l-4 border-orange-500 p-6 rounded">
+                  <div className="font-bold mb-4">5. Have you been baptized by immersion for the forgiveness of sins as an accountable person?</div>
+                  <div className="space-y-2">
+                    <OptionButton 
+                      selected={appData.salvationData.baptism === 2}
+                      onClick={() => selectSalvationAnswer('baptism', 2)}
+                    >
+                      Yes, by immersion as an accountable believer for salvation
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.baptism === 1}
+                      onClick={() => selectSalvationAnswer('baptism', 1)}
+                    >
+                      Yes, but as an infant or for other reasons
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.baptism === 0}
+                      onClick={() => selectSalvationAnswer('baptism', 0)}
+                    >
+                      No, I have not been baptized
+                    </OptionButton>
+                  </div>
                 </div>
 
-                <div class="assessment-question">
-                    <div class="question">5. Have you been baptized by immersion for the forgiveness of sins as an accountable person?</div>
-                    <div class="options">
-                        <div class="option" onclick="selectSalvationAnswer(this, 'baptism', 2)">Yes, by immersion as an accountable believer for salvation</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'baptism', 1)">Yes, but as an infant or for other reasons</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'baptism', 0)">No, I have not been baptized</div>
-                    </div>
+                <div className="bg-white border-l-4 border-orange-500 p-6 rounded">
+                  <div className="font-bold mb-4">6. Do you regularly attend worship services at a Church of Christ?</div>
+                  <div className="space-y-2">
+                    <OptionButton 
+                      selected={appData.salvationData.worship === 2}
+                      onClick={() => selectSalvationAnswer('worship', 2)}
+                    >
+                      Yes, every Sunday (both morning and evening when possible)
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.worship === 1}
+                      onClick={() => selectSalvationAnswer('worship', 1)}
+                    >
+                      Most Sundays, but not always consistent
+                    </OptionButton>
+                    <OptionButton 
+                      selected={appData.salvationData.worship === 0}
+                      onClick={() => selectSalvationAnswer('worship', 0)}
+                    >
+                      Rarely, never, or attend other denominations
+                    </OptionButton>
+                  </div>
                 </div>
+              </div>
 
-                <div class="assessment-question">
-                    <div class="question">6. Do you regularly attend worship services at a Church of Christ?</div>
-                    <div class="options">
-                        <div class="option" onclick="selectSalvationAnswer(this, 'worship', 2)">Yes, every Sunday (both morning and evening when possible)</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'worship', 1)">Most Sundays, but not always consistent</div>
-                        <div class="option" onclick="selectSalvationAnswer(this, 'worship', 0)">Rarely, never, or attend other denominations</div>
-                    </div>
-                </div>
+              <button 
+                className="bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors duration-300 mt-6"
+                onClick={calculateSalvationStatus}
+              >
+                Assess My Salvation Status
+              </button>
 
-                <button class="btn btn-warning" onclick="calculateSalvationStatus()">Assess My Salvation Status</button>
-
-                <div id="salvation-results" class="salvation-status">
-                    <h3 id="salvation-level"></h3>
-                    <p id="salvation-description"></p>
-                    <div id="salvation-recommendations"></div>
-                </div>
-
-                <div class="bible-verse">
-                    <strong>"He who believes and is baptized will be saved; but he who does not believe will be condemned."</strong> - Mark 16:16
-                </div>
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mt-6 rounded italic">
+                <strong>"He who believes and is baptized will be saved; but he who does not believe will be condemned."</strong> - Mark 16:16
+              </div>
             </div>
+          )}
 
-            <!-- Mental Wellness Section -->
-            <div id="mental" class="section">
-                <h2>🧠 Mental Wellness Activities</h2>
+          {/* Mental Wellness Section */}
+          {activeSection === 'mental' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">🧠 Mental Wellness Activities</h2>
+              
+              {/* Breathing Exercise */}
+              <div className="bg-gradient-to-br from-green-100 to-green-200 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🫁 Biblical Breathing Exercise (4-6 Technique)</h3>
+                <div className="bg-green-50 p-4 rounded mb-4">
+                  <h4 className="font-bold mb-2">📋 Instructions:</h4>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li><strong>Inhale through your nose</strong> for 4 seconds, breathing deeply into your diaphragm</li>
+                    <li><strong>Exhale through your mouth</strong> for 6 seconds, pursing your lips as if breathing through a straw</li>
+                    <li>Focus on God's peace entering as you breathe in, anxiety leaving as you breathe out</li>
+                    <li>Repeat this cycle while meditating on Philippians 4:6-7</li>
+                  </ol>
+                  <p className="italic mt-2">"Be anxious for nothing, but in everything by prayer... let your requests be made known to God."</p>
+                </div>
                 
-                <div class="pillar-card mental-card">
-                    <h3>🫁 Biblical Breathing Exercise (4-6 Technique)</h3>
-                    <div class="breathing-instructions">
-                        <h4>📋 Instructions:</h4>
-                        <ol>
-                            <li><strong>Inhale through your nose</strong> for 4 seconds, breathing deeply into your diaphragm</li>
-                            <li><strong>Exhale through your mouth</strong> for 6 seconds, pursing your lips as if breathing through a straw</li>
-                            <li>Focus on God's peace entering as you breathe in, anxiety leaving as you breathe out</li>
-                            <li>Repeat this cycle while meditating on Philippians 4:6-7</li>
-                        </ol>
-                        <p><em>"Be anxious for nothing, but in everything by prayer... let your requests be made known to God."</em></p>
-                    </div>
-                    <div class="breathing-container">
-                        <div class="breathing-circle" id="breathing-circle">
-                            <span id="breathing-text">Ready</span>
-                        </div>
-                        <div id="breathing-instruction" style="margin: 10px 0; font-weight: bold; color: #4CAF50;"></div>
-                        <button class="btn" onclick="startBiblicalBreathing()">Start Biblical Breathing</button>
-                        <button class="btn btn-secondary" onclick="stopBreathing()">Stop</button>
-                    </div>
+                <div className="text-center">
+                  <div className={`w-32 h-32 rounded-full bg-gradient-to-br from-green-500 to-green-600 mx-auto mb-4 flex items-center justify-center text-white font-bold text-lg shadow-lg transition-transform duration-1000 ${
+                    breathingPhase === 'inhale' ? 'transform scale-150' : 
+                    breathingPhase === 'exhale' ? 'transform scale-75' : ''
+                  }`}>
+                    {breathingPhase === 'ready' ? 'Ready' :
+                     breathingPhase === 'inhale' ? 'Inhale' : 'Exhale'}
+                  </div>
+                  <div className="mb-4 font-bold text-green-600">
+                    {breathingPhase === 'inhale' ? 'Breathe in slowly through your nose...' :
+                     breathingPhase === 'exhale' ? 'Breathe out through pursed lips like through a straw...' : ''}
+                  </div>
+                  <div className="space-x-2">
+                    <button 
+                      className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors duration-300"
+                      onClick={startBiblicalBreathing}
+                    >
+                      Start Biblical Breathing
+                    </button>
+                    <button 
+                      className="bg-gray-500 text-white px-6 py-2 rounded-full hover:bg-gray-600 transition-colors duration-300"
+                      onClick={stopBreathing}
+                    >
+                      Stop
+                    </button>
+                  </div>
                 </div>
+              </div>
 
-                <div class="pillar-card mental-card">
-                    <h3>📊 Anxiety & Stress Tracker</h3>
-                    <div style="margin: 15px 0;">
-                        <label><strong>Current Anxiety Level (1-10):</strong></label>
-                        <div class="scale-container" id="anxiety-scale">
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 1)">1</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 2)">2</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 3)">3</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 4)">4</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 5)">5</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 6)">6</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 7)">7</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 8)">8</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 9)">9</div>
-                            <div class="scale-btn" onclick="selectScale(this, 'anxiety', 10)">10</div>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="saveData('anxiety')">Save Anxiety Level</button>
+              {/* Anxiety Tracker */}
+              <div className="bg-gradient-to-br from-green-100 to-green-200 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">📊 Anxiety & Stress Tracker</h3>
+                <div className="mb-4">
+                  <label className="font-bold">Current Anxiety Level (1-10):</label>
+                  <div className="flex justify-between mt-3 gap-2">
+                    {[1,2,3,4,5,6,7,8,9,10].map(value => (
+                      <ScaleButton 
+                        key={value}
+                        value={value}
+                        selected={appData.anxiety === value}
+                        onClick={selectScale}
+                        type="anxiety"
+                      />
+                    ))}
+                  </div>
                 </div>
+                <button 
+                  className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors duration-300"
+                  onClick={() => saveData('anxiety')}
+                >
+                  Save Anxiety Level
+                </button>
+              </div>
 
-                <div class="pillar-card mental-card">
-                    <h3>🎯 Daily Mental Health Goals</h3>
-                    <div class="goals-checklist">
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Complete 5-minute breathing exercise</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Practice 5-4-3-2-1 grounding technique</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Read Philippians 4:6-7 during anxiety</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Write down 3 things I'm grateful for</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Limit negative news/social media</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Pray about my worries instead of dwelling</span>
-                        </div>
-                    </div>
+              {/* Mental Health Goals */}
+              <div className="bg-gradient-to-br from-green-100 to-green-200 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🎯 Daily Mental Health Goals</h3>
+                <div className="bg-white rounded-lg">
+                  <GoalItem 
+                    text="Complete 5-minute breathing exercise"
+                    checked={appData.goals.includes("Complete 5-minute breathing exercise")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Practice 5-4-3-2-1 grounding technique"
+                    checked={appData.goals.includes("Practice 5-4-3-2-1 grounding technique")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Read Philippians 4:6-7 during anxiety"
+                    checked={appData.goals.includes("Read Philippians 4:6-7 during anxiety")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Write down 3 things I'm grateful for"
+                    checked={appData.goals.includes("Write down 3 things I'm grateful for")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Limit negative news/social media"
+                    checked={appData.goals.includes("Limit negative news/social media")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Pray about my worries instead of dwelling"
+                    checked={appData.goals.includes("Pray about my worries instead of dwelling")}
+                    onToggle={toggleGoal}
+                  />
                 </div>
+              </div>
 
-                <div class="bible-verse">
-                    <strong>"Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God; and the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus."</strong> - Philippians 4:6-7
-                </div>
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded italic">
+                <strong>"Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God; and the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus."</strong> - Philippians 4:6-7
+              </div>
             </div>
+          )}
 
-            <!-- Spiritual Wellness Section -->
-            <div id="spiritual" class="section">
-                <h2>✝️ Spiritual Wellness Activities</h2>
-                
-                <div class="pillar-card spiritual-card">
-                    <h3>📖 Daily Scripture & Prayer</h3>
-                    <div id="daily-verse-section">
-                        <p><strong>Today's Verse for Strength:</strong></p>
-                        <div class="bible-verse" id="daily-verse-text">
-                            "I can do all things through Christ who strengthens me." - Philippians 4:13
-                        </div>
-                    </div>
-                    <button class="btn btn-warning" onclick="getNewScripture()">Get New Scripture</button>
-                    <button class="btn btn-secondary" onclick="markScriptureRead()">Mark as Read</button>
+          {/* Spiritual Wellness Section */}
+          {activeSection === 'spiritual' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">✝️ Spiritual Wellness Activities</h2>
+              
+              {/* Daily Scripture */}
+              <div className="bg-gradient-to-br from-orange-100 to-orange-200 border-l-4 border-orange-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">📖 Daily Scripture & Prayer</h3>
+                <div className="mb-4">
+                  <p className="font-bold">Today's Verse for Strength:</p>
+                  <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mt-2 rounded italic">
+                    {currentScripture}
+                  </div>
                 </div>
-
-                <div class="pillar-card spiritual-card">
-                    <h3>🙏 Prayer Life Tracker</h3>
-                    <div class="goals-checklist">
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Morning prayer (5+ minutes)</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Gratitude prayers before meals</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Evening reflection and prayer</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Pray for someone else's needs</span>
-                        </div>
-                        <div class="goal-item" onclick="toggleGoal(this)">
-                            <input type="checkbox" class="goal-checkbox">
-                            <span>Use prayer during anxious moments</span>
-                        </div>
-                    </div>
+                <div className="space-x-2">
+                  <button 
+                    className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors duration-300"
+                    onClick={getNewScripture}
+                  >
+                    Get New Scripture
+                  </button>
+                  <button 
+                    className="bg-gray-500 text-white px-6 py-2 rounded-full hover:bg-gray-600 transition-colors duration-300"
+                    onClick={markScriptureRead}
+                  >
+                    Mark as Read
+                  </button>
                 </div>
+              </div>
 
-                <div class="pillar-card spiritual-card">
-                    <h3>⛪ Church Connection Assessment</h3>
-                    <div style="margin: 15px 0;">
-                        <label><strong>How connected do you feel to your church family
+              {/* Prayer Life Tracker */}
+              <div className="bg-gradient-to-br from-orange-100 to-orange-200 border-l-4 border-orange-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🙏 Prayer Life Tracker</h3>
+                <div className="bg-white rounded-lg">
+                  <GoalItem 
+                    text="Morning prayer (5+ minutes)"
+                    checked={appData.goals.includes("Morning prayer (5+ minutes)")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Gratitude prayers before meals"
+                    checked={appData.goals.includes("Gratitude prayers before meals")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Evening reflection and prayer"
+                    checked={appData.goals.includes("Evening reflection and prayer")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Pray for someone else's needs"
+                    checked={appData.goals.includes("Pray for someone else's needs")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Use prayer during anxious moments"
+                    checked={appData.goals.includes("Use prayer during anxious moments")}
+                    onToggle={toggleGoal}
+                  />
+                </div>
+              </div>
+
+              {/* Church Connection Assessment */}
+              <div className="bg-gradient-to-br from-orange-100 to-orange-200 border-l-4 border-orange-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">⛪ Church Connection Assessment</h3>
+                <div className="mb-4">
+                  <label className="font-bold">How connected do you feel to your church family today? (1-10):</label>
+                  <div className="flex justify-between mt-3 gap-2">
+                    {[1,2,3,4,5,6,7,8,9,10].map(value => (
+                      <ScaleButton 
+                        key={value}
+                        value={value}
+                        selected={appData.connection === value}
+                        onClick={selectScale}
+                        type="connection"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <button 
+                  className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors duration-300"
+                  onClick={() => saveData('connection')}
+                >
+                  Save Rating
+                </button>
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded italic">
+                <strong>"Not forsaking the assembling of ourselves together, as is the manner of some, but exhorting one another, and so much the more as you see the Day approaching."</strong> - Hebrews 10:25
+              </div>
+            </div>
+          )}
+
+          {/* Social Wellness Section */}
+          {activeSection === 'social' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">👥 Social Wellness Activities</h2>
+              
+              {/* Daily Social Connections */}
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🤝 Daily Social Connections</h3>
+                <div className="bg-white rounded-lg">
+                  <GoalItem 
+                    text="Call or text a family member"
+                    checked={appData.goals.includes("Call or text a family member")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Reach out to encourage a church friend"
+                    checked={appData.goals.includes("Reach out to encourage a church friend")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Practice active listening with someone"
+                    checked={appData.goals.includes("Practice active listening with someone")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Show Christ's love through service"
+                    checked={appData.goals.includes("Show Christ's love through service")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Participate in church fellowship"
+                    checked={appData.goals.includes("Participate in church fellowship")}
+                    onToggle={toggleGoal}
+                  />
+                </div>
+              </div>
+
+              {/* Relationship Quality Assessment */}
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">❤️ Relationship Quality Assessment</h3>
+                <div className="mb-4">
+                  <label className="font-bold">How satisfied are you with your relationships today? (1-10):</label>
+                  <div className="flex justify-between mt-3 gap-2">
+                    {[1,2,3,4,5,6,7,8,9,10].map(value => (
+                      <ScaleButton 
+                        key={value}
+                        value={value}
+                        selected={appData.relationship === value}
+                        onClick={selectScale}
+                        type="relationship"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <button 
+                  className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300"
+                  onClick={() => saveData('relationship')}
+                >
+                  Save Rating
+                </button>
+              </div>
+
+              {/* Social Connection Goal */}
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🎯 Social Connection Goal</h3>
+                <label className="font-bold">Today's social goal:</label>
+                <textarea 
+                  className="w-full min-h-32 p-4 border-2 border-gray-300 rounded-lg mt-2 focus:border-blue-500 outline-none resize-vertical"
+                  placeholder="What relationship will you focus on strengthening today? (e.g., 'I will actively listen to my spouse without interrupting during our evening conversation')"
+                  value={appData.socialGoal}
+                  onChange={(e) => setAppData(prev => ({ ...prev, socialGoal: e.target.value }))}
+                />
+                <button 
+                  className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300 mt-3"
+                  onClick={saveSocialGoal}
+                >
+                  Save Goal
+                </button>
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded italic">
+                <strong>"As iron sharpens iron, so a man sharpens the countenance of his friend."</strong> - Proverbs 27:17
+              </div>
+            </div>
+          )}
+
+          {/* Emotional Wellness Section */}
+          {activeSection === 'emotional' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">❤️ Emotional Wellness Activities</h2>
+              
+              {/* Daily Mood & Emotion Tracker */}
+              <div className="bg-gradient-to-br from-pink-100 to-pink-200 border-l-4 border-pink-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">😊 Daily Mood & Emotion Tracker</h3>
+                <div className="mb-4">
+                  <label className="font-bold">Primary emotion right now:</label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-3">
+                    {[
+                      { emoji: '😊', name: 'Joyful', value: 'joyful' },
+                      { emoji: '😌', name: 'Peaceful', value: 'peaceful' },
+                      { emoji: '😰', name: 'Anxious', value: 'anxious' },
+                      { emoji: '😢', name: 'Sad', value: 'sad' },
+                      { emoji: '😠', name: 'Angry', value: 'angry' },
+                      { emoji: '🙏', name: 'Grateful', value: 'grateful' }
+                    ].map(emotion => (
+                      <button
+                        key={emotion.value}
+                        className={`p-4 border-2 rounded-lg transition-all duration-300 flex flex-col items-center ${
+                          appData.emotion === emotion.value 
+                            ? 'border-pink-500 bg-pink-50' 
+                            : 'border-gray-200 bg-white hover:border-pink-500 hover:bg-pink-50'
+                        }`}
+                        onClick={() => selectEmotion(emotion.value)}
+                      >
+                        <span className="text-2xl mb-1">{emotion.emoji}</span>
+                        <span className="text-sm font-bold">{emotion.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <button 
+                  className="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition-colors duration-300"
+                  onClick={saveEmotion}
+                >
+                  Save Emotion
+                </button>
+              </div>
+
+              {/* Biblical Emotional Reflection */}
+              <div className="bg-gradient-to-br from-pink-100 to-pink-200 border-l-4 border-pink-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">📝 Biblical Emotional Reflection</h3>
+                <label className="font-bold">Reflect on your emotions through a biblical lens:</label>
+                <textarea 
+                  className="w-full min-h-32 p-4 border-2 border-gray-300 rounded-lg mt-2 focus:border-pink-500 outline-none resize-vertical"
+                  placeholder="Today I felt... because... Based on God's word, I can respond by... Scripture that helps me: ..."
+                  value={appData.emotionalJournal}
+                  onChange={(e) => setAppData(prev => ({ ...prev, emotionalJournal: e.target.value }))}
+                />
+                <button 
+                  className="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition-colors duration-300 mt-3"
+                  onClick={saveEmotionalJournal}
+                >
+                  Save Reflection
+                </button>
+              </div>
+
+              {/* Emotional Regulation Goals */}
+              <div className="bg-gradient-to-br from-pink-100 to-pink-200 border-l-4 border-pink-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🧘 Emotional Regulation Goals</h3>
+                <div className="bg-white rounded-lg">
+                  <GoalItem 
+                    text="Pause and pray before reacting emotionally"
+                    checked={appData.goals.includes("Pause and pray before reacting emotionally")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Counter negative thoughts with Scripture"
+                    checked={appData.goals.includes("Counter negative thoughts with Scripture")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Practice forgiveness (self or others)"
+                    checked={appData.goals.includes("Practice forgiveness (self or others)")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Express gratitude for 5 specific things"
+                    checked={appData.goals.includes("Express gratitude for 5 specific things")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Use biblical anger management (Eph 4:26)"
+                    checked={appData.goals.includes("Use biblical anger management (Eph 4:26)")}
+                    onToggle={toggleGoal}
+                  />
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded italic">
+                <strong>"Be angry, and do not sin: do not let the sun go down on your wrath, nor give place to the devil."</strong> - Ephesians 4:26-27
+              </div>
+            </div>
+          )}
+
+          {/* Physical Wellness Section */}
+          {activeSection === 'physical' && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6">💪 Physical Wellness Activities</h2>
+              
+              {/* Body Stewardship Tracker */}
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">🏃 Body Stewardship Tracker</h3>
+                <div className="bg-white rounded-lg">
+                  <GoalItem 
+                    text="20+ minutes of physical activity"
+                    checked={appData.goals.includes("20+ minutes of physical activity")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Drink 8+ glasses of water"
+                    checked={appData.goals.includes("Drink 8+ glasses of water")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Eat nutritious, balanced meals"
+                    checked={appData.goals.includes("Eat nutritious, balanced meals")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Get 7+ hours of quality sleep"
+                    checked={appData.goals.includes("Get 7+ hours of quality sleep")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Honor God with my body choices"
+                    checked={appData.goals.includes("Honor God with my body choices")}
+                    onToggle={toggleGoal}
+                  />
+                  <GoalItem 
+                    text="Avoid harmful substances"
+                    checked={appData.goals.includes("Avoid harmful substances")}
+                    onToggle={toggleGoal}
+                  />
+                </div>
+              </div>
+
+              {/* Biblical Body Stewardship Assessment */}
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">⚖️ Biblical Body Stewardship Assessment</h3>
+                <div className="mb-4">
+                  <label className="font-bold">How well are you honoring God with your body today? (1-10):</label>
+                  <div className="flex justify-between mt-3 gap-2">
+                    {[1,2,3,4,5,6,7,8,9,10].map(value => (
+                      <ScaleButton 
+                        key={value}
+                        value={value}
+                        selected={appData.stewardship === value}
+                        onClick={selectScale}
+                        type="stewardship"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <button 
+                  className="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition-colors duration-300"
+                  onClick={() => saveData('stewardship')}
+                >
+                  Save Rating
+                </button>
+              </div>
+
+              {/* Daily Health Metrics */}
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-3">📊 Daily Health Metrics</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="font-bold block mb-2">Steps Today:</label>
+                    <input 
+                      type="number" 
+                      placeholder="0"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none"
+                      value={appData.healthMetrics.steps}
+                      onChange={(e) => setAppData(prev => ({ 
+                        ...prev, 
+                        healthMetrics: { ...prev.healthMetrics, steps: parseInt(e.target.value) || 0 }
+                      }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold block mb-2">Sleep Hours Last Night:</label>
+                    <input 
+                      type="number" 
+                      placeholder="0" 
+                      step="0.5"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none"
+                      value={appData.healthMetrics.sleep}
+                      onChange={(e) => setAppData(prev => ({ 
+                        ...prev, 
+                        healthMetrics: { ...prev.healthMetrics, sleep: parseFloat(e.target.value) || 0 }
+                      }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold block mb-2">Water Glasses:</label>
+                    <input 
+                      type="number" 
+                      placeholder="0"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none"
+                      value={appData.healthMetrics.water}
+                      onChange={(e) => setAppData(prev => ({ 
+                        ...prev, 
+                        healthMetrics: { ...prev.healthMetrics, water: parseInt(e.target.value) || 0 }
+                      }))}
+                    />
+                  </div>
+                </div>
+                <button 
+                  className="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition-colors duration-300"
+                  onClick={saveHealthMetrics}
+                >
+                  Save Health Data
+                </button>
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded italic">
+                <strong>"Or do you not know that your body is the temple of the Holy Spirit who is in you, whom you have from God, and you are not your own? For you were bought at a price; therefore glorify God in your body and in your spirit, which are God's."</strong> - 1 Corinthians 6:19-20
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WellnessApp;
