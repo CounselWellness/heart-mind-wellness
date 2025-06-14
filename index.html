@@ -3,629 +3,696 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heart & Mind: Guided Wellness</title>
+    <title>5-Pillar Mental Wellness Daily Companion</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #667eea; color: #333; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; background: white; min-height: 100vh; }
-        
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .header p { font-size: 1.2em; opacity: 0.9; }
-        
-        .content { padding: 30px; }
-        .section { margin-bottom: 40px; }
-        
-        .verse-card { 
-            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%); 
-            padding: 25px; 
-            border-radius: 15px; 
-            margin-bottom: 30px; 
-            text-align: center; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .verse-text { font-style: italic; font-size: 1.1em; margin-bottom: 10px; }
-        .verse-ref { font-weight: bold; color: #2d3436; }
-        
-        .mood-section { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 15px; 
-            margin-bottom: 30px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
             text-align: center;
         }
-        .mood-emojis { display: flex; justify-content: space-around; margin: 20px 0; }
-        .mood-emoji { font-size: 3em; padding: 15px; }
-        .mood-labels { display: flex; justify-content: space-around; font-size: 0.9em; color: #666; }
-        
-        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .action-card { 
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); 
-            color: white; 
-            padding: 25px; 
-            border-radius: 15px; 
-            text-align: center; 
-            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
-            transition: transform 0.3s ease;
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
         }
-        .action-card:hover { transform: translateY(-5px); }
-        .action-card h3 { margin-bottom: 10px; }
-        .action-card .icon { font-size: 2em; margin-bottom: 10px; }
-        
-        .screening-section { background: #f8f9fa; padding: 30px; border-radius: 15px; margin-bottom: 40px; }
-        .screening-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-        .screening-card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 10px; 
-            border-left: 5px solid #007bff;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+
+        .client-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
         }
-        .screening-card h4 { color: #007bff; margin-bottom: 10px; }
-        .screening-link { 
-            display: inline-block; 
-            background: #007bff; 
-            color: white; 
-            padding: 10px 20px; 
-            text-decoration: none; 
-            border-radius: 25px; 
-            margin-top: 10px;
-            transition: background 0.3s ease;
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            overflow-x: auto;
         }
-        .screening-link:hover { background: #0056b3; }
-        
-        .breathing-section { 
-            background: linear-gradient(135deg, #ff7675 0%, #e17055 100%); 
-            color: white; 
-            padding: 40px; 
-            border-radius: 15px; 
-            text-align: center; 
-            margin-bottom: 40px;
-        }
-        .heart { 
-            width: 150px; 
-            height: 150px; 
-            background: rgba(255,255,255,0.2); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 4em; 
-            margin: 20px auto;
-            animation: heartbeat 2s infinite;
-        }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .breathing-instructions { 
-            background: rgba(255,255,255,0.1); 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin-top: 20px;
-        }
-        
-        .devotion-section { background: #f8f9fa; padding: 30px; border-radius: 15px; margin-bottom: 40px; }
-        .devotion-step { 
-            background: white; 
-            padding: 20px; 
-            margin: 15px 0; 
-            border-radius: 10px; 
-            border-left: 5px solid #28a745;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-        .devotion-step h4 { color: #28a745; margin-bottom: 10px; }
-        
-        .tools-section { margin-bottom: 40px; }
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .tool-card { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 15px; 
-            border-left: 5px solid #17a2b8;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .tool-card h4 { color: #17a2b8; margin-bottom: 15px; }
-        .tool-card p { margin-bottom: 15px; color: #666; }
-        .tool-links { display: flex; gap: 10px; flex-wrap: wrap; }
-        .tool-link { 
-            background: #17a2b8; 
-            color: white; 
-            padding: 8px 15px; 
-            text-decoration: none; 
-            border-radius: 20px; 
-            font-size: 0.9em;
-            transition: background 0.3s ease;
-        }
-        .tool-link:hover { background: #138496; }
-        
-        .support-section { margin-bottom: 40px; }
-        .emergency-card { 
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); 
-            color: white; 
-            padding: 30px; 
-            border-radius: 15px; 
-            text-align: center; 
-            margin-bottom: 20px;
-        }
-        .emergency-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-        .emergency-link { 
-            background: white; 
-            color: #dc3545; 
-            padding: 12px 25px; 
-            text-decoration: none; 
-            border-radius: 25px; 
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
             font-weight: bold;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            min-width: 120px;
+            font-size: 0.9em;
         }
-        .emergency-link:hover { transform: translateY(-2px); }
-        
-        .counseling-card { 
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
-            color: white; 
-            padding: 30px; 
-            border-radius: 15px; 
+
+        .nav-tab.active {
+            background: white;
+            border-bottom-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .content {
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .pillar-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
             margin-bottom: 20px;
+            border-left: 5px solid #4CAF50;
         }
-        .counseling-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-        .counseling-link { 
-            background: rgba(255,255,255,0.2); 
-            color: white; 
-            padding: 12px 25px; 
-            text-decoration: none; 
-            border-radius: 25px; 
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: background 0.3s ease;
+
+        .mental-card { border-left-color: #4CAF50; background: linear-gradient(135deg, #e8f5e8, #c8e6c9); }
+        .spiritual-card { border-left-color: #FF9800; background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .social-card { border-left-color: #2196F3; background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+        .emotional-card { border-left-color: #e91e63; background: linear-gradient(135deg, #fce4ec, #f8bbd9); }
+        .physical-card { border-left-color: #9c27b0; background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
         }
-        .counseling-link:hover { background: rgba(255,255,255,0.3); }
-        
-        .prayer-section { background: #f8f9fa; padding: 30px; border-radius: 15px; }
-        .prayer-card { 
-            background: white; 
-            padding: 20px; 
-            margin: 15px 0; 
-            border-radius: 10px; 
-            border-left: 5px solid #6f42c1;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
-        .prayer-meta { font-size: 0.8em; color: #666; margin-bottom: 10px; }
-        .prayer-count { font-size: 0.8em; color: #6f42c1; margin-top: 10px; }
-        
-        .navigation { 
-            background: #343a40; 
-            padding: 20px 0; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
+
+        .btn-warning { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .btn-primary { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .btn-danger { background: linear-gradient(135deg, #f44336, #D32F2F); }
+        .btn-secondary { background: linear-gradient(135deg, #6c757d, #5a6268); }
+
+        .breathing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            text-align: center;
         }
-        .nav-links { 
-            display: flex; 
-            justify-content: center; 
-            gap: 30px; 
+
+        .breathing-instructions {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .breathing-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            transition: transform 4s ease-in-out;
+            margin: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .breathing-circle.expand {
+            transform: scale(1.5);
+        }
+
+        .breathing-circle.contract {
+            transform: scale(0.8);
+            transition: transform 6s ease-in-out;
+        }
+
+        .bible-verse {
+            background: #f0f8ff;
+            border-left: 4px solid #4169e1;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+            border-radius: 5px;
+        }
+
+        .church-of-christ-info {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .assessment-question {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #FF9800;
+        }
+
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #FF9800;
+            background: #fff8e1;
+        }
+
+        .option.selected {
+            border-color: #FF9800;
+            background: #fff3e0;
+            font-weight: bold;
+        }
+
+        .salvation-status {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #2196F3;
+        }
+
+        .scale-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
             flex-wrap: wrap;
+            gap: 10px;
         }
-        .nav-link { 
-            color: white; 
-            text-decoration: none; 
-            padding: 10px 20px; 
-            border-radius: 25px; 
-            transition: background 0.3s ease;
+
+        .scale-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
-        .nav-link:hover { background: rgba(255,255,255,0.1); }
-        
-        .form-section { background: white; padding: 25px; border-radius: 15px; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        .form-group input, .form-group textarea { 
-            width: 100%; 
-            padding: 12px; 
-            border: 2px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+
+        .scale-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.1);
         }
-        .form-group input:focus, .form-group textarea:focus { 
-            outline: none; 
-            border-color: #007bff; 
+
+        .scale-btn.selected {
+            border-color: #4CAF50;
+            background: #4CAF50;
+            color: white;
         }
-        .submit-btn { 
-            background: #007bff; 
-            color: white; 
-            padding: 15px 30px; 
-            border: none; 
-            border-radius: 25px; 
-            font-size: 16px; 
+
+        .goals-checklist {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
             cursor: pointer;
             transition: background 0.3s ease;
         }
-        .submit-btn:hover { background: #0056b3; }
-        
+
+        .goal-item:hover {
+            background: #f8f9fa;
+        }
+
+        .goal-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            accent-color: #4CAF50;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#4CAF50 0deg, #e9ecef 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .progress-circle::before {
+            content: '';
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+
+        .progress-text {
+            position: relative;
+            font-weight: bold;
+            font-size: 1.2em;
+            z-index: 1;
+        }
+
+        .emergency-contacts {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .contact-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .journal-area {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+        }
+
+        .journal-area:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .daily-affirmations {
+            background: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #4169e1;
+        }
+
+        .affirmation-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1976D2;
+            text-align: center;
+            margin: 10px 0;
+        }
+
         @media (max-width: 768px) {
-            .container { margin: 0; }
-            .content { padding: 20px; }
-            .quick-actions { grid-template-columns: 1fr; }
-            .screening-grid { grid-template-columns: 1fr; }
-            .tools-grid { grid-template-columns: 1fr; }
-            .nav-links { gap: 15px; }
-            .emergency-links, .counseling-links { flex-direction: column; align-items: center; }
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .scale-container {
+                justify-content: center;
+            }
+
+            .scale-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>❤️ Heart & Mind</h1>
-            <p>Guided Wellness Through Faith</p>
-        </div>
-        
-        <div class="navigation">
-            <div class="nav-links">
-                <a href="#home" class="nav-link">🏠 Home</a>
-                <a href="#screening" class="nav-link">🧠 Screening</a>
-                <a href="#breathing" class="nav-link">🧘 Breathing</a>
-                <a href="#devotion" class="nav-link">📖 Devotion</a>
-                <a href="#tools" class="nav-link">📝 Tools</a>
-                <a href="#support" class="nav-link">🙏 Support</a>
+            <h1>🌟 Daily Wellness Companion</h1>
+            <p>Mental • Spiritual • Social • Emotional • Physical</p>
+            <div class="client-info">
+                <p><strong>Welcome back!</strong> Your biblical wellness journey continues today.</p>
+                <p id="current-date"></p>
             </div>
         </div>
-        
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showSection('assessment')">Salvation Check</button>
+            <button class="nav-tab" onclick="showSection('mental')">Mental</button>
+            <button class="nav-tab" onclick="showSection('spiritual')">Spiritual</button>
+            <button class="nav-tab" onclick="showSection('social')">Social</button>
+            <button class="nav-tab" onclick="showSection('emotional')">Emotional</button>
+            <button class="nav-tab" onclick="showSection('physical')">Physical</button>
+        </div>
+
         <div class="content">
-            <!-- Home Section -->
-            <section id="home" class="section">
-                <div class="verse-card">
-                    <div class="verse-text">"Come to me, all you who are weary and burdened, and I will give you rest."</div>
-                    <div class="verse-ref">- Matthew 11:28</div>
-                </div>
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <h2>📊 Today's Wellness Dashboard</h2>
                 
-                <div class="mood-section">
-                    <h3>How are you feeling today?</h3>
-                    <div class="mood-emojis">
-                        <span class="mood-emoji">😔</span>
-                        <span class="mood-emoji">😐</span>
-                        <span class="mood-emoji">🙂</span>
-                        <span class="mood-emoji">😄</span>
+                <div class="daily-affirmations">
+                    <h3>🌅 Today's Biblical Affirmation</h3>
+                    <div class="affirmation-text" id="daily-affirmation">
+                        "I am fearfully and wonderfully made by God (Psalm 139:14)"
                     </div>
-                    <div class="mood-labels">
-                        <span>Struggling</span>
-                        <span>Okay</span>
-                        <span>Good</span>
-                        <span>Great</span>
+                    <button class="btn btn-primary" onclick="getNewAffirmation()">New Affirmation</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+                    <div class="pillar-card mental-card">
+                        <h3>🧠 Mental Wellness</h3>
+                        <div class="progress-circle" id="mental-progress">
+                            <div class="progress-text">0%</div>
+                        </div>
+                        <p>Focus: Anxiety & Stress Management</p>
+                        <button class="btn" onclick="showSection('mental')">Explore Mental</button>
                     </div>
-                    <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 10px; font-style: italic;">
-                        "The Lord is close to the brokenhearted and saves those who are crushed in spirit." - Psalm 34:18
+                    
+                    <div class="pillar-card spiritual-card">
+                        <h3>✝️ Spiritual Wellness</h3>
+                        <div class="progress-circle" id="spiritual-progress">
+                            <div class="progress-text">0%</div>
+                        </div>
+                        <p>Focus: Prayer, Scripture & Salvation</p>
+                        <button class="btn btn-warning" onclick="showSection('spiritual')">Explore Spiritual</button>
+                    </div>
+                    
+                    <div class="pillar-card social-card">
+                        <h3>👥 Social Wellness</h3>
+                        <div class="progress-circle" id="social-progress">
+                            <div class="progress-text">0%</div>
+                        </div>
+                        <p>Focus: Church & Family Connections</p>
+                        <button class="btn btn-primary" onclick="showSection('social')">Explore Social</button>
                     </div>
                 </div>
-                
-                <div class="quick-actions">
-                    <a href="#screening" class="action-card" style="text-decoration: none; color: white;">
-                        <div class="icon">🧠</div>
-                        <h3>Mental Health Screening</h3>
-                        <p>Professional assessment tools</p>
-                    </a>
-                    <a href="#breathing" class="action-card" style="text-decoration: none; color: white;">
-                        <div class="icon">🧘</div>
-                        <h3>Breathing Exercise</h3>
-                        <p>Calm your heart and mind</p>
-                    </a>
-                    <a href="#devotion" class="action-card" style="text-decoration: none; color: white;">
-                        <div class="icon">📖</div>
-                        <h3>Daily Devotion</h3>
-                        <p>5-step spiritual growth</p>
-                    </a>
-                    <a href="#tools" class="action-card" style="text-decoration: none; color: white;">
-                        <div class="icon">📝</div>
-                        <h3>Therapy Tools</h3>
-                        <p>Wellness worksheets</p>
-                    </a>
+
+                <div class="bible-verse">
+                    <strong>"Beloved, I pray that you may prosper in all things and be in health, just as your soul prospers."</strong> - 3 John 1:2
                 </div>
-            </section>
-            
-            <!-- Screening Section -->
-            <section id="screening" class="section">
-                <div class="screening-section">
-                    <h2>🧠 Mental Health Screenings</h2>
-                    <p>Professional assessment tools from Mental Health America</p>
-                    
-                    <div class="screening-grid">
-                        <div class="screening-card">
-                            <h4>Depression Test (PHQ-9)</h4>
-                            <p>Assess symptoms of depression with this validated screening tool.</p>
-                            <a href="https://screening.mhanational.org/screening-tools/depression/" target="_blank" class="screening-link">Take Assessment</a>
-                        </div>
-                        
-                        <div class="screening-card">
-                            <h4>Anxiety Test (GAD-7)</h4>
-                            <p>Evaluate anxiety levels with this professional screening.</p>
-                            <a href="https://screening.mhanational.org/screening-tools/anxiety/" target="_blank" class="screening-link">Take Assessment</a>
-                        </div>
-                        
-                        <div class="screening-card">
-                            <h4>PTSD Screening</h4>
-                            <p>Post-traumatic stress disorder assessment and resources.</p>
-                            <a href="https://screening.mhanational.org/screening-tools/ptsd/" target="_blank" class="screening-link">Take Assessment</a>
-                        </div>
-                        
-                        <div class="screening-card">
-                            <h4>ADHD Test</h4>
-                            <p>Attention deficit hyperactivity disorder screening.</p>
-                            <a href="https://screening.mhanational.org/screening-tools/adhd/" target="_blank" class="screening-link">Take Assessment</a>
-                        </div>
-                        
-                        <div class="screening-card">
-                            <h4>Bipolar Screening</h4>
-                            <p>Mood disorder assessment and evaluation.</p>
-                            <a href="https://screening.mhanational.org/screening-tools/bipolar/" target="_blank" class="screening-link">Take Assessment</a>
-                        </div>
-                        
-                        <div class="screening-card">
-                            <h4>Addiction Screening</h4>
-                            <p>Substance use disorder assessment and support.</p>
-                            <a href="https://screening.mhanational.org/screening-tools/addiction/" target="_blank" class="screening-link">Take Assessment</a>
-                        </div>
-                    </div>
+
+                <div class="emergency-contacts">
+                    <h3>🚨 Crisis Resources</h3>
+                    <p>If you're experiencing a mental health crisis or thoughts of self-harm:</p>
+                    <a href="tel:988" class="contact-btn">🆘 Crisis Lifeline: 988</a>
+                    <a href="tel:911" class="contact-btn">🚑 Emergency: 911</a>
+                    <a href="tel:555-123-4567" class="contact-btn">⛪ Church Minister</a>
+                    <a href="tel:555-987-6543" class="contact-btn">👨‍⚕️ Counselor</a>
                 </div>
-            </section>
-            
-            <!-- Breathing Section -->
-            <section id="breathing" class="section">
-                <div class="breathing-section">
-                    <h2>🧘 Breathe from the Heart</h2>
-                    <p>A simple breathing exercise to find peace</p>
-                    
-                    <div class="heart">❤️</div>
-                    
-                    <div class="breathing-instructions">
-                        <h3>Instructions:</h3>
-                        <ol style="text-align: left; margin: 20px 0;">
-                            <li><strong>Place your hand on your heart</strong></li>
-                            <li><strong>Breathe in slowly through your nose for 4 seconds</strong></li>
-                            <li><strong>Breathe out slowly through your mouth for 6 seconds</strong></li>
-                            <li><strong>Repeat 5 times</strong></li>
-                            <li><strong>Focus on gratitude, care, or compassion</strong></li>
-                        </ol>
-                        <p><em>"Be still, and know that I am God" - Psalm 46:10</em></p>
-                    </div>
-                    
-                    <div class="form-section" style="background: rgba(255,255,255,0.1); color: white;">
-                        <h3>Reflection</h3>
-                        <form>
-                            <div class="form-group">
-                                <label for="reflection">What are you grateful for right now?</label>
-                                <textarea id="reflection" rows="4" placeholder="Write your thoughts here..." style="background: rgba(255,255,255,0.9); color: #333;"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Devotion Section -->
-            <section id="devotion" class="section">
-                <div class="devotion-section">
-                    <h2>📖 Daily Devotion</h2>
-                    <p>5-Step spiritual growth for today</p>
-                    
-                    <div class="devotion-step">
-                        <h4>Step 1: Today's Verse</h4>
-                        <p><em>"And we know that in all things God works for the good of those who love him, who have been called according to his purpose."</em> - Romans 8:28</p>
-                    </div>
-                    
-                    <div class="devotion-step">
-                        <h4>Step 2: Practical Application</h4>
-                        <p>When facing challenges today, remember that God is working behind the scenes. Trust His plan even when you can't see the outcome.</p>
-                    </div>
-                    
-                    <div class="devotion-step">
-                        <h4>Step 3: Reflection Question</h4>
-                        <p>How can you trust God's goodness in a current difficult situation?</p>
-                        <form>
-                            <div class="form-group">
-                                <textarea rows="3" placeholder="Write your thoughts here..."></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="devotion-step">
-                        <h4>Step 4: Inspiring Quote</h4>
-                        <p><em>"God's plan for your life is always better than your own."</em> - Unknown</p>
-                    </div>
-                    
-                    <div class="devotion-step">
-                        <h4>Step 5: Prayer</h4>
-                        <p><em>Lord, help me trust Your perfect plan today. When I'm anxious or fearful, remind me that You work all things for my good. Amen.</em></p>
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 30px;">
-                        <a href="https://www.bible.com/" target="_blank" class="tool-link" style="background: #28a745; margin: 0 10px;">🎵 Audio Bible</a>
-                        <a href="https://www.biblegateway.com/" target="_blank" class="tool-link" style="background: #28a745; margin: 0 10px;">📖 Bible Gateway</a>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Tools Section -->
-            <section id="tools" class="section">
-                <div class="tools-section">
-                    <h2>📝 Therapy Tools</h2>
-                    <p>Wellness worksheets and exercises</p>
-                    
-                    <div class="tools-grid">
-                        <div class="tool-card">
-                            <h4>Gratitude Journal</h4>
-                            <p>"Give thanks in all circumstances" - 1 Thessalonians 5:18</p>
-                            <form>
-                                <div class="form-group">
-                                    <label>What are you grateful for today?</label>
-                                    <textarea rows="3" placeholder="Write your gratitude entry..."></textarea>
-                                </div>
-                            </form>
-                            <div class="tool-links">
-                                <a href="#" class="tool-link">💾 Save Entry</a>
-                                <a href="#" class="tool-link">📖 View Past Entries</a>
-                            </div>
-                        </div>
-                        
-                        <div class="tool-card">
-                            <h4>CBT Thought Record</h4>
-                            <p>Challenge negative thoughts with Scripture truth</p>
-                            <form>
-                                <div class="form-group">
-                                    <label>Negative thought:</label>
-                                    <input type="text" placeholder="What negative thought are you having?">
-                                </div>
-                                <div class="form-group">
-                                    <label>God's truth:</label>
-                                    <textarea rows="2" placeholder="What does Scripture say about this?"></textarea>
-                                </div>
-                            </form>
-                            <div class="tool-links">
-                                <a href="#" class="tool-link">📝 Complete Worksheet</a>
-                                <a href="#" class="tool-link">📄 Download PDF</a>
-                            </div>
-                        </div>
-                        
-                        <div class="tool-card">
-                            <h4>Trauma Healing Log</h4>
-                            <p>"He heals the brokenhearted and binds up their wounds" - Psalm 147:3</p>
-                            <form>
-                                <div class="form-group">
-                                    <label>Today's healing reflection:</label>
-                                    <textarea rows="4" placeholder="Safe space to process difficult experiences..."></textarea>
-                                </div>
-                            </form>
-                            <div class="tool-links">
-                                <a href="#" class="tool-link">💾 Save Entry</a>
-                                <a href="mailto:nevillewbuchanan@gmail.com?subject=Trauma Healing Progress" class="tool-link">📤 Share with Counselor</a>
-                            </div>
-                        </div>
-                        
-                        <div class="tool-card">
-                            <h4>Self-Esteem Builder</h4>
-                            <p>Identity in Christ - Ephesians 1</p>
-                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                                <p><strong>You are:</strong></p>
-                                <ul style="margin: 10px 0 0 20px;">
-                                    <li>✨ CHOSEN by God (v.4)</li>
-                                    <li>✨ HOLY and BLAMELESS (v.4)</li>
-                                    <li>✨ ADOPTED as God's child (v.5)</li>
-                                    <li>✨ REDEEMED through His blood (v.7)</li>
-                                    <li>✨ FORGIVEN of all sins (v.7)</li>
-                                </ul>
-                            </div>
-                            <div class="tool-links">
-                                <a href="#" class="tool-link">💪 Daily Affirmations</a>
-                                <a href="mailto:nevillewbuchanan@gmail.com?subject=Self-Esteem Progress" class="tool-link">📤 Share Progress</a>
-                            </div>
-                        </div>
-                        
-                        <div class="tool-card">
-                            <h4>Anger Management</h4>
-                            <p>"In your anger do not sin" - Ephesians 4:26</p>
-                            <form>
-                                <div class="form-group">
-                                    <label>What triggered your anger?</label>
-                                    <input type="text" placeholder="Identify the trigger...">
-                                </div>
-                                <div class="form-group">
-                                    <label>Healthy response:</label>
-                                    <textarea rows="2" placeholder="How can you respond in a godly way?"></textarea>
-                                </div>
-                            </form>
-                            <div class="tool-links">
-                                <a href="#" class="tool-link">🧘 Complete Exercise</a>
-                                <a href="#" class="tool-link">📄 Download Guide</a>
-                            </div>
-                        </div>
-                        
-                        <div class="tool-card">
-                            <h4>Financial Stewardship</h4>
-                            <p>"The plans of the diligent lead to profit" - Proverbs 21:5</p>
-                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                                <p><strong>Biblical Principles:</strong></p>
-                                <ul style="margin: 10px 0 0 20px;">
-                                    <li>💰 Budgeting with wisdom</li>
-                                    <li>❤️ Generous giving</li>
-                                    <li>🏦 Saving for the future</li>
-                                    <li>🚫 Avoiding debt</li>
-                                    <li>🙏 Trusting God's provision</li>
-                                </ul>
-                            </div>
-                            <div class="tool-links">
-                                <a href="#" class="tool-link">💰 Start Budget</a>
-                                <a href="#" class="tool-link">📊 Track Progress</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Support Section -->
-            <section id="support" class="section">
-                <div class="support-section">
-                    <h2>🙏 Support & Prayer</h2>
-                    <p>You are not alone in this journey</p>
-                    
-                    <div class="emergency-card">
-                        <h3>🚨 Need Help Now?</h3>
-                        <p>If you're in crisis, please reach out immediately</p>
-                        <div class="emergency-links">
-                            <a href="tel:911" class="emergency-link">🚨 Call 911</a>
-                            <a href="tel:988" class="emergency-link">📞 988 Suicide Hotline</a>
-                            <a href="tel:18007997233" class="emergency-link">🏠 Domestic Abuse: 1-800-799-7233</a>
-                        </div>
-                    </div>
-                    
-                    <div class="counseling-card">
-                        <h3>📞 Christian Counseling</h3>
-                        <p><strong>Counseling Wellness Group, LLC</strong></p>
-                        <p>Christian counselors ready to help you on your healing journey</p>
-                        <div class="counseling-links">
-                            <a href="https://neville.clientsecure.me/" target="_blank" class="counseling-link">🗓️ Schedule Online</a>
-                            <a href="sms:(859)359-2205?body=Hello, I would like to schedule a counseling appointment through the Heart & Mind app." class="counseling-link">📱 Text: (859) 359-2205</a>
-                            <a href="mailto:nevillewbuchanan@gmail.com?subject=Counseling Appointment Request&body=Hello, I found your practice through the Heart & Mind app and would like to schedule a counseling appointment." class="counseling-link">✉️ Email Counselor</a>
-                        </div>
-                    </div>
-                    
-                    <div class="prayer-section">
-                        <h3>🙏 Prayer Wall</h3>
-                        <p>Submit your prayer requests and pray for others</p>
-                        
-                        <form>
-                            <div class="form-group">
-                                <label>Submit your prayer request:</label>
-                                <textarea rows="4" placeholder="Share what's on your heart. Requests are reviewed before posting for privacy."></textarea>
-                            </div>
-                            <button type="submit" class="submit-btn">✍️ Submit Prayer Request</button>
-                        </form>
-                        
-                        <div class="prayer-card">
-                            <div class="prayer-meta">Anonymous - 2 hours ago</div>
-                            <div>Please pray for my family as we navigate financial difficulties. Trusting God's provision during this challenging time.</div>
-                            <div class="prayer-count">🙏 12 people praying</div>
-                        </div>
-                        
-                        <div class="prayer-card">
-                            <div class="prayer-meta">Sarah M. - 1 day ago</div>
-                            <div>Struggling with anxiety about my job interview tomorrow. Seeking peace and confidence in God's plan for my career.</div>
-                            <div class="prayer-count">🙏 8 people praying</div>
-                        </div>
-                        
-                        <div class="prayer-card">
-                            <div class="prayer-meta">Michael K. - 2 days ago</div>
-                            <div>Dealing with depression and feeling isolated. Please pray for God's comfort and healing, and for connections with caring people.</div>
-                            <div class="prayer-count">🙏 15 people praying</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-        
-        <footer style="background: #343a40; color: white; text-align: center; padding: 30px;">
-            <p><strong>Heart & Mind: Guided Wellness</strong></p>
-            <p style="margin: 10px 0;">"He heals the brokenhearted and binds up their wounds." - Psalm 147:3</p>
-            <p style="font-size: 0.9em; opacity: 0.8;">Professional counseling available through Counseling Wellness Group, LLC</p>
-            <div style="margin-top: 20px;">
-                <a href="https://neville.clientsecure.me/" target="_blank" style="color: #20c997; text-decoration: none; margin: 0 15px;">Schedule Appointment</a>
-                <a href="tel:(859)359-2205" style="color: #20c997; text-decoration: none; margin: 0 15px;">Call: (859) 359-2205</a>
-                <a href="mailto:nevillewbuchanan@gmail.com" style="color: #20c997; text-decoration: none; margin: 0 15px;">Email Counselor</a>
             </div>
-        </footer>
-    </div>
-</body>
-</html>
+
+            <!-- Salvation Assessment Section -->
+            <div id="assessment" class="section">
+                <h2>✝️ Church of Christ Salvation Assessment</h2>
+                
+                <div class="church-of-christ-info">
+                    <h3>📖 Biblical Foundation</h3>
+                    <p>This assessment is based on the New Testament plan of salvation as practiced in Churches of Christ. According to Scripture, salvation requires:</p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li><strong>Hearing</strong> the Gospel (Romans 10:17)</li>
+                        <li><strong>Believing</strong> in Jesus Christ (Mark 16:16)</li>
+                        <li><strong>Repenting</strong> of sins (Acts 2:38)</li>
+                        <li><strong>Confessing</strong> Jesus as Lord (Romans 10:9-10)</li>
+                        <li><strong>Being baptized</strong> by immersion for forgiveness (Acts 2:38, Mark 16:16)</li>
+                        <li><strong>Living faithfully</strong> as a Christian (Revelation 2:10)</li>
+                    </ul>
+                </div>
+
+                <div class="assessment-question">
+                    <div class="question">1. Have you heard and understood the Gospel of Jesus Christ?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectSalvationAnswer(this, 'gospel', 2)">Yes, I clearly understand Jesus died for my sins and rose again</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'gospel', 1)">Somewhat - I know some basics about Jesus</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'gospel', 0)">No or unsure - Would like to learn more</div>
+                    </div>
+                </div>
+
+                <div class="assessment-question">
+                    <div class="question">2. Do you believe that Jesus Christ is the Son of God and your personal Savior?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectSalvationAnswer(this, 'believe', 2)">Yes, with complete faith and conviction</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'believe', 1)">I think so, but have some doubts</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'believe', 0)">No or very unsure</div>
+                    </div>
+                </div>
+
+                <div class="assessment-question">
+                    <div class="question">3. Have you confessed Jesus Christ as Lord before others?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectSalvationAnswer(this, 'confess', 2)">Yes, publicly before the church</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'confess', 1)">Yes, but only privately or to a few people</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'confess', 0)">No, I have not made this confession</div>
+                    </div>
+                </div>
+
+                <div class="assessment-question">
+                    <div class="question">4. Have you genuinely repented of your sins?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectSalvationAnswer(this, 'repent', 2)">Yes, I have turned away from sin with a changed heart</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'repent', 1)">I try to do better but struggle with consistency</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'repent', 0)">No or unsure what true repentance means</div>
+                    </div>
+                </div>
+
+                <div class="assessment-question">
+                    <div class="question">5. Have you been baptized by immersion for the forgiveness of sins as an accountable person?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectSalvationAnswer(this, 'baptism', 2)">Yes, by immersion as an accountable believer for salvation</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'baptism', 1)">Yes, but as an infant or for other reasons</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'baptism', 0)">No, I have not been baptized</div>
+                    </div>
+                </div>
+
+                <div class="assessment-question">
+                    <div class="question">6. Do you regularly attend worship services at a Church of Christ?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectSalvationAnswer(this, 'worship', 2)">Yes, every Sunday (both morning and evening when possible)</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'worship', 1)">Most Sundays, but not always consistent</div>
+                        <div class="option" onclick="selectSalvationAnswer(this, 'worship', 0)">Rarely, never, or attend other denominations</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-warning" onclick="calculateSalvationStatus()">Assess My Salvation Status</button>
+
+                <div id="salvation-results" class="salvation-status" style="display: none;">
+                    <h3 id="salvation-level"></h3>
+                    <p id="salvation-description"></p>
+                    <div id="salvation-recommendations"></div>
+                </div>
+
+                <div class="bible-verse">
+                    <strong>"He who believes and is baptized will be saved; but he who does not believe will be condemned."</strong> - Mark 16:16
+                </div>
+            </div>
+
+            <!-- Mental Wellness Section -->
+            <div id="mental" class="section">
+                <h2>🧠 Mental Wellness Activities</h2>
+                
+                <div class="pillar-card mental-card">
+                    <h3>🫁 Biblical Breathing Exercise (4-6 Technique)</h3>
+                    <div class="breathing-instructions">
+                        <h4>📋 Instructions:</h4>
+                        <ol>
+                            <li><strong>Inhale through your nose</strong> for 4 seconds, breathing deeply into your diaphragm</li>
+                            <li><strong>Exhale through your mouth</strong> for 6 seconds, pursing your lips as if breathing through a straw</li>
+                            <li>Focus on God's peace entering as you breathe in, anxiety leaving as you breathe out</li>
+                            <li>Repeat this cycle while meditating on Philippians 4:6-7</li>
+                        </ol>
+                        <p><em>"Be anxious for nothing, but in everything by prayer... let your requests be made known to God."</em></p>
+                    </div>
+                    <div class="breathing-container">
+                        <div class="breathing-circle" id="breathing-circle">
+                            <span id="breathing-text">Ready</span>
+                        </div>
+                        <div id="breathing-instruction" style="margin: 10px 0; font-weight: bold; color: #4CAF50;"></div>
+                        <button class="btn" onclick="startBiblicalBreathing()">Start Biblical Breathing</button>
+                        <button class="btn btn-secondary" onclick="stopBreathing()">Stop</button>
+                    </div>
+                </div>
+
+                <div class="pillar-card mental-card">
+                    <h3>📊 Anxiety & Stress Tracker</h3>
+                    <div style="margin: 15px 0;">
+                        <label><strong>Current Anxiety Level (1-10):</strong></label>
+                        <div class="scale-container" id="anxiety-scale">
+                            <div class="scale-btn" onclick="selectAnxiety(this, 1)">1</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 2)">2</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 3)">3</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 4)">4</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 5)">5</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 6)">6</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 7)">7</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 8)">8</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 9)">9</div>
+                            <div class="scale-btn" onclick="selectAnxiety(this, 10)">10</div>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="saveAnxietyLevel()">Save Anxiety Level</button>
+                </div>
+
+                <div class="pillar-card mental-card">
+                    <h3>🎯 Daily Mental Health Goals</h3>
+                    <div class="goals-checklist">
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Complete 5-minute breathing exercise</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Practice 5-4-3-2-1 grounding technique</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Read Philippians 4:6-7 during anxiety</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Write down 3 things I'm grateful for</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Limit negative news/social media</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Pray about my worries instead of dwelling</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bible-verse">
+                    <strong>"Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God; and the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus."</strong> - Philippians 4:6-7
+                </div>
+            </div>
+
+            <!-- Spiritual Wellness Section -->
+            <div id="spiritual" class="section">
+                <h2>✝️ Spiritual Wellness Activities</h2>
+                
+                <div class="pillar-card spiritual-card">
+                    <h3>📖 Daily Scripture & Prayer</h3>
+                    <div id="daily-verse-section">
+                        <p><strong>Today's Verse for Strength:</strong></p>
+                        <div class="bible-verse" id="daily-verse-text">
+                            "I can do all things through Christ who strengthens me." - Philippians 4:13
+                        </div>
+                    </div>
+                    <button class="btn btn-warning" onclick="getNewScripture()">Get New Scripture</button>
+                    <button class="btn btn-secondary" onclick="markScriptureRead()">Mark as Read</button>
+                </div>
+
+                <div class="pillar-card spiritual-card">
+                    <h3>🙏 Prayer Life Tracker</h3>
+                    <div class="goals-checklist">
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Morning prayer (5+ minutes)</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Gratitude prayers before meals</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Evening reflection and prayer</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Pray for someone else's needs</span>
+                        </div>
+                        <div class="goal-item" onclick="toggleGoal(this)">
+                            <input type="checkbox" class="goal-checkbox">
+                            <span>Use prayer during anxious moments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pillar-card spiritual-card">
+                    <h3>⛪ Church Connection Assessment</h3>
+                    <div style="margin: 15px 0;">
+                        <label><strong>How connected do you feel to your church family today? (1-10):</strong></label>
+                        <div class="scale-container" id="church-connection">
+                            <div class="scale-btn" onclick="selectConnection(this, 1)">1</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 2)">2</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 3)">3</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 4)">4</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 5)">5</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 6)">6</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 7)">7</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 8)">8</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 9)">9</div>
+                            <div class="scale-btn" onclick="selectConnection(this, 10)">10</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-warning" onclick="saveChurchConnection()">Save Rating</button>
+                </div>
+
+                <div class
